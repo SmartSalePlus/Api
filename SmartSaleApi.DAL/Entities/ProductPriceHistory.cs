@@ -1,6 +1,6 @@
 ﻿namespace SmartSaleApi.DAL.Entities;
 
-internal sealed class PriceHistory {
+internal sealed class ProductPriceHistory {
     public int Id { get; set; }
     public int ProductId { get; set; }
     public double Price { get; set; }

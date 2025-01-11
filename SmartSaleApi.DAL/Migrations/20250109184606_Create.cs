@@ -32,6 +32,7 @@ namespace SmartSaleApi.DAL.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    Count = table.Column<int>(type: "integer", nullable: false),
                     CountInPackage = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -77,7 +78,7 @@ namespace SmartSaleApi.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PriceHistories",
+                name: "ProductPriceHistories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -89,9 +90,9 @@ namespace SmartSaleApi.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PriceHistories", x => x.Id);
+                    table.PrimaryKey("PK_ProductPriceHistories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PriceHistories_Products_ProductId",
+                        name: "FK_ProductPriceHistories_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -162,8 +163,8 @@ namespace SmartSaleApi.DAL.Migrations
                 column: "BuyerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PriceHistories_ProductId",
-                table: "PriceHistories",
+                name: "IX_ProductPriceHistories_ProductId",
+                table: "ProductPriceHistories",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -179,7 +180,7 @@ namespace SmartSaleApi.DAL.Migrations
                 name: "InvoiceDetails");
 
             migrationBuilder.DropTable(
-                name: "PriceHistories");
+                name: "ProductPriceHistories");
 
             migrationBuilder.DropTable(
                 name: "ReceptionDetails");

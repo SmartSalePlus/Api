@@ -12,7 +12,7 @@ using SmartSaleApi.DAL.Contexts;
 namespace SmartSaleApi.DAL.Migrations
 {
     [DbContext(typeof(SmartSaleDbContext))]
-    [Migration("20250108173116_Create")]
+    [Migration("20250109184606_Create")]
     partial class Create
     {
         /// <inheritdoc />
@@ -99,7 +99,30 @@ namespace SmartSaleApi.DAL.Migrations
                     b.ToTable("InvoiceDetails");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.DAL.Entities.PriceHistory", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Count")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CountInPackage")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.ProductPriceHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -123,27 +146,7 @@ namespace SmartSaleApi.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("PriceHistories");
-                });
-
-            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CountInPackage")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Products");
+                    b.ToTable("ProductPriceHistories");
                 });
 
             modelBuilder.Entity("SmartSaleApi.DAL.Entities.Reception", b =>
@@ -213,10 +216,10 @@ namespace SmartSaleApi.DAL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.DAL.Entities.PriceHistory", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.ProductPriceHistory", b =>
                 {
                     b.HasOne("SmartSaleApi.DAL.Entities.Product", "Product")
-                        .WithMany("PriceHistories")
+                        .WithMany("ProductPriceHistories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -257,7 +260,7 @@ namespace SmartSaleApi.DAL.Migrations
                 {
                     b.Navigation("InvoiceDetails");
 
-                    b.Navigation("PriceHistories");
+                    b.Navigation("ProductPriceHistories");
 
                     b.Navigation("ReceptionDetails");
                 });

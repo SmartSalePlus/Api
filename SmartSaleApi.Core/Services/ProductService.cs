@@ -5,12 +5,12 @@ using SmartSaleApi.Core.Models;
 namespace SmartSaleApi.Core.Services;
 
 public sealed class ProductService(
-    IProductRepository repository, 
-    IProductPriceHistoryRepository productPriceHistoryRepository
+    IProductRepository repository,
+    IProductPriceHistoryService productPriceHistoryService
 ) : IProductService {
     public void Add(Product product) {
         repository.Add(product);
-        productPriceHistoryRepository.Add(CreateProductPriceHistory(product));
+        productPriceHistoryService.Add(product);
     }
 
     public void Delete(int id) {
@@ -32,12 +32,19 @@ public sealed class ProductService(
     public void Update(Product product) {
         repository.Update(product);
         if (IsPriceChanged(product)) {
-            productPriceHistoryRepository.Add(CreateProductPriceHistory(product));
+            productPriceHistoryService.Add(product);
         }
     }
 
-    private ProductPriceHistory CreateProductPriceHistory(Product product)
-        => new(0, product.Price, DateTime.UtcNow, DateTime.MaxValue, product);
+    public void IncreaseCount(Product product, int count) {
+        Product newProduct = new(0, product.Name, product.Count + count, product.CountInPackage, product.Price);
+        Update(newProduct);
+    }
+
+    public void DecreaseCount(Product product, int count) {
+        Product newProduct = new(0, product.Name, product.Count - count, product.CountInPackage, product.Price);
+        Update(newProduct);
+    }
 
     private bool IsPriceChanged(Product product) {
         var oldPrice = repository.Get(product.Id).Price;

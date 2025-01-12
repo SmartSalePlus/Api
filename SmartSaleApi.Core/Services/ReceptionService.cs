@@ -11,7 +11,7 @@ public sealed class ReceptionService(
     public void Add(Reception reception) {
         repository.Add(reception);
         foreach (var receptionDetail in reception.ReceptionDetails) {
-            productService.Update(CreateProduct(receptionDetail.Product, receptionDetail.Count));
+            productService.IncreaseCount(receptionDetail.Product, receptionDetail.Count);
         }
     }
 
@@ -38,13 +38,4 @@ public sealed class ReceptionService(
     public void Update(Reception reception) {
         repository.Update(reception);
     }
-
-    private Product CreateProduct(Product product, int count)
-        => new(
-            0,
-            product.Name,
-            product.Count + count,
-            product.CountInPackage,
-            product.Price
-        );
 }

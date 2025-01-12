@@ -7,6 +7,7 @@ internal static class ServicesRegisterExtension {
     public static IServiceCollection AddServices(this IServiceCollection services) {
         services.AddScoped<IBuyerService, BuyerService>();
         services.AddScoped<IInvoiceService, InvoiceService>();
+        services.AddScoped<IProductPriceHistoryService, ProductPriceHistoryService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IReceptionService, ReceptionService>();
 

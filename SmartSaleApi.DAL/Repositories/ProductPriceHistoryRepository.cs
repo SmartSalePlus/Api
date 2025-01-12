@@ -1,4 +1,5 @@
-﻿using SmartSaleApi.Core.Interfaces.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Models;
 using SmartSaleApi.DAL.Contexts;
 using SmartSaleApi.DAL.Extensions;
@@ -10,5 +11,13 @@ public sealed class ProductPriceHistoryRepository(SmartSaleDbContext context) : 
         context.ProductPriceHistories
             .Add(productPriceHistory.ToEntity());
         context.SaveChanges();
+    }
+
+    public void Update(int productId) {
+        context.ProductPriceHistories
+            .Where(x => x.ProductId == productId && x.DateEnd == DateTime.MaxValue)
+            .ExecuteUpdate(u => u
+                .SetProperty(p => p.DateEnd, DateTime.UtcNow)
+            );
     }
 }

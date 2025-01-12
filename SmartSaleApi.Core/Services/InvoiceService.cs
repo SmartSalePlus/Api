@@ -4,9 +4,15 @@ using SmartSaleApi.Core.Models;
 
 namespace SmartSaleApi.Core.Services;
 
-public sealed class InvoiceService(IInvoiceRepository repository) : IInvoiceService {
+public sealed class InvoiceService(
+    IInvoiceRepository repository,
+    IProductService productService
+) : IInvoiceService {
     public void Add(Invoice invoice) {
         repository.Add(invoice);
+        foreach (var invoiceDetail in invoice.InvoiceDetails) {
+            productService.DecreaseCount(invoiceDetail.Product, invoiceDetail.Count);
+        }
     }
 
     public void Delete(int id) {

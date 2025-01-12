@@ -4,4 +4,5 @@ namespace SmartSaleApi.Core.Interfaces.Repositories;
 
 public interface IProductPriceHistoryRepository {
     void Add(ProductPriceHistory productPriceHistory);
+    void Update(int productId);
 }

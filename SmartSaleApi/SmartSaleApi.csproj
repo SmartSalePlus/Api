@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SmartSaleApi.Core\SmartSaleApi.Core.csproj" />
     <ProjectReference Include="..\SmartSaleApi.DAL\SmartSaleApi.DAL.csproj" />
   </ItemGroup>

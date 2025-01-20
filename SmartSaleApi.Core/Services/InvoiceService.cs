@@ -1,4 +1,5 @@
-﻿using SmartSaleApi.Core.Interfaces.Repositories;
+﻿using SmartSaleApi.Core.Extensions;
+using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
@@ -6,13 +7,11 @@ namespace SmartSaleApi.Core.Services;
 
 public sealed class InvoiceService(
     IInvoiceRepository repository,
-    IProductService productService
+    IInvoiceDetailService invoiceDetailService
 ) : IInvoiceService {
     public void Add(Invoice invoice) {
-        repository.Add(invoice);
-        foreach (var invoiceDetail in invoice.InvoiceDetails) {
-            productService.DecreaseCount(invoiceDetail.Product, invoiceDetail.Count);
-        }
+        var id = repository.Add(invoice);
+        invoiceDetailService.AddRange(invoice.CloneWithNewId(id));
     }
 
     public void Delete(int id) {

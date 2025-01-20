@@ -1,4 +1,5 @@
-﻿using SmartSaleApi.Core.Interfaces.Repositories;
+﻿using SmartSaleApi.Core.Extensions;
+using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
@@ -9,8 +10,8 @@ public sealed class ProductService(
     IProductPriceHistoryService productPriceHistoryService
 ) : IProductService {
     public void Add(Product product) {
-        repository.Add(product);
-        productPriceHistoryService.Add(product);
+        var id = repository.Add(product);
+        productPriceHistoryService.Add(product.CloneWithNewId(id));
     }
 
     public void Delete(int id) {
@@ -32,18 +33,17 @@ public sealed class ProductService(
     public void Update(Product product) {
         repository.Update(product);
         if (IsPriceChanged(product)) {
+            productPriceHistoryService.Update(product.Id);
             productPriceHistoryService.Add(product);
         }
     }
 
-    public void IncreaseCount(Product product, int count) {
-        Product newProduct = new(0, product.Name, product.Count + count, product.CountInPackage, product.Price);
-        Update(newProduct);
+    public void AddCount(Product product, int count) {
+        Update(product.CloneWithNewCount(product.Count + count));
     }
 
-    public void DecreaseCount(Product product, int count) {
-        Product newProduct = new(0, product.Name, product.Count - count, product.CountInPackage, product.Price);
-        Update(newProduct);
+    public void ReduceCount(Product product, int count) {
+        Update(product.CloneWithNewCount(product.Count - count));
     }
 
     private bool IsPriceChanged(Product product) {

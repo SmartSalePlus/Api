@@ -1,4 +1,5 @@
-﻿using SmartSaleApi.Core.Interfaces.Repositories;
+﻿using SmartSaleApi.Core.Extensions;
+using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
@@ -6,13 +7,11 @@ namespace SmartSaleApi.Core.Services;
 
 public sealed class ReceptionService(
     IReceptionRepository repository,
-    IProductService productService
+    IReceptionDetailService receptionDetailService
 ) : IReceptionService {
     public void Add(Reception reception) {
-        repository.Add(reception);
-        foreach (var receptionDetail in reception.ReceptionDetails) {
-            productService.IncreaseCount(receptionDetail.Product, receptionDetail.Count);
-        }
+        var id = repository.Add(reception);
+        receptionDetailService.AddRange(reception.CloneWithNewId(id));
     }
 
     public void Delete(int id) {

@@ -7,9 +7,12 @@ using SmartSaleApi.DAL.Extensions;
 namespace SmartSaleApi.DAL.Repositories;
 
 public sealed class ProductPriceHistoryRepository(SmartSaleDbContext context) : IProductPriceHistoryRepository {
-    public void Add(ProductPriceHistory productPriceHistory) {
-        context.ProductPriceHistories
-            .Add(productPriceHistory.ToEntity());
+    public void Add(Product product) {
+        var productEntity = product.ToEntity();
+        var entity = product.CreateProductPriceHistory()
+            .ToEntity(productEntity);
+        context.Attach(productEntity);
+        context.ProductPriceHistories.Add(entity);
         context.SaveChanges();
     }
 

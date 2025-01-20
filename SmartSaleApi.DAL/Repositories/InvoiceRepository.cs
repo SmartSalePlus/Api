@@ -6,11 +6,17 @@ using SmartSaleApi.DAL.Extensions;
 
 namespace SmartSaleApi.DAL.Repositories;
 
-public sealed class InvoiceRepository(SmartSaleDbContext context) : IInvoiceRepository {
-    public void Add(Invoice invoice) {
-        context.Invoices
-            .Add(invoice.ToEntity());
+public sealed class InvoiceRepository(
+    SmartSaleDbContext context
+) : IInvoiceRepository {
+    public int Add(Invoice invoice) {
+        var buyerEntity = invoice.Buyer.ToEntity();
+        var entity = invoice.ToEntity(buyerEntity);
+        context.Attach(buyerEntity);
+        context.Invoices.Add(entity);
         context.SaveChanges();
+
+        return entity.Id;
     }
 
     public void Delete(int id) {

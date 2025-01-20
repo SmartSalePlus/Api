@@ -4,4 +4,5 @@ namespace SmartSaleApi.Core.Interfaces.Services;
 
 public interface IProductPriceHistoryService {
     void Add(Product product);
+    void Update(int productId);
 }

@@ -15,6 +15,7 @@ internal static class BuyerExtension {
 
     public static DAL::Buyer ToEntity(this Core::Buyer src)
         => new() { 
+            Id = src.Id,
             Name = src.Name 
         };
 }

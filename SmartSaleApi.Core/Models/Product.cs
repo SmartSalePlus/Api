@@ -5,5 +5,6 @@ public sealed record Product(
     string Name,
     int Count,
     int CountInPackage,
-    double Price
+    double Price,
+    IEnumerable<ProductPriceHistory> ProductPriceHistories
 );

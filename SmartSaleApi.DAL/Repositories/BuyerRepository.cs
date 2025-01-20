@@ -8,8 +8,8 @@ namespace SmartSaleApi.DAL.Repositories;
 
 public sealed class BuyerRepository(SmartSaleDbContext context) : IBuyerRepository {
     public void Add(Buyer buyer) {
-        context.Buyers
-            .Add(buyer.ToEntity());
+        var entity = buyer.ToEntity();
+        context.Buyers.Add(entity);
         context.SaveChanges();
     }
 
@@ -29,13 +29,15 @@ public sealed class BuyerRepository(SmartSaleDbContext context) : IBuyerReposito
     public IEnumerable<Buyer> Get(string name) {
         return context.Buyers
             .AsNoTracking()
-            .Where(x => x.Name == name)
+            .Where(x => x.Name.ToLower().Contains(name.ToLower()))
+            .OrderBy(x => x.Name)
             .ToModel();
     }
 
     public IEnumerable<Buyer> Get() {
         return context.Buyers
             .AsNoTracking()
+            .OrderBy(x => x.Name)
             .ToModel();
     }
 

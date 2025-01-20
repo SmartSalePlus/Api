@@ -9,6 +9,6 @@ public interface IProductService {
     Product Get(int id);
     IEnumerable<Product> Get(string name);
     IEnumerable<Product> Get();
-    void IncreaseCount(Product product, int count);
-    void DecreaseCount(Product product, int count);
+    void AddCount(Product product, int count);
+    void ReduceCount(Product product, int count);
 }

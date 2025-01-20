@@ -7,10 +7,12 @@ using SmartSaleApi.DAL.Extensions;
 namespace SmartSaleApi.DAL.Repositories;
 
 public sealed class ReceptionRepository(SmartSaleDbContext context) : IReceptionRepository {
-    public void Add(Reception reception) {
-        context.Receptions
-            .Add(reception.ToEntity());
+    public int Add(Reception reception) {
+        var entity = reception.ToEntity();
+        context.Receptions.Add(entity);
         context.SaveChanges();
+
+        return entity.Id;
     }
 
     public void Delete(int id) {
@@ -47,6 +49,7 @@ public sealed class ReceptionRepository(SmartSaleDbContext context) : IReception
             .AsNoTracking()
             .Include(x => x.ReceptionDetails.Where(x => x.ProductId == productId))
             //.ThenInclude(x => x.Product)
+            //.Where(x => x.ReceptionDetails.Any(x => x.ProductId == productId))
             .ToModel();
     }
 

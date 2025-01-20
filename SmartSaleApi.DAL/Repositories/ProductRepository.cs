@@ -7,10 +7,12 @@ using SmartSaleApi.DAL.Extensions;
 namespace SmartSaleApi.DAL.Repositories;
 
 public sealed class ProductRepository(SmartSaleDbContext context) : IProductRepository {
-    public void Add(Product product) {
-        context.Products
-            .Add(product.ToEntity());
+    public int Add(Product product) {
+        var entity = product.ToEntity();
+        context.Products.Add(entity);
         context.SaveChanges();
+
+        return entity.Id;
     }
 
     public void Delete(int id) {
@@ -32,6 +34,7 @@ public sealed class ProductRepository(SmartSaleDbContext context) : IProductRepo
             .AsNoTracking()
             .Include(x => x.ProductPriceHistories)
             .Where(x => x.Name.ToLower().Contains(name.ToLower()))
+            .OrderBy(x => x.Name)
             .ToModel();
     }
 
@@ -39,6 +42,7 @@ public sealed class ProductRepository(SmartSaleDbContext context) : IProductRepo
         return context.Products
             .AsNoTracking()
             .Include(x => x.ProductPriceHistories)
+            .OrderBy(x => x.Name)
             .ToModel();
     }
 

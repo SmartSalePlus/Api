@@ -15,18 +15,14 @@ internal static class InvoiceDetailExtension {
     public static IEnumerable<Core::InvoiceDetail> ToModel(this IEnumerable<DAL::InvoiceDetail> src)
         => src.Select(x => x.ToModel());
 
-    public static DAL::InvoiceDetail ToEntity(this Core::InvoiceDetail src, Core::Invoice invoice)
+    public static DAL::InvoiceDetail ToEntity(this Core::InvoiceDetail src, DAL::Invoice invoice, DAL::Product product)
         => new() {
-            //InvoiceId = invoice.Id,
-            //ProductId = src.Product.Id,
+            InvoiceId = invoice.Id,
+            ProductId = product.Id,
             Count = src.Count,
             Price = src.Price,
             Total = src.Total,
-            Invoice = invoice.ToEntity(),
-            Product = src.Product.ToEntity()
+            Invoice = invoice,
+            Product = product
         };
-
-    public static ICollection<DAL::InvoiceDetail> ToEntity(this IEnumerable<Core::InvoiceDetail> src, Core::Invoice invoice)
-        => src.Select(x => x.ToEntity(invoice))
-            .ToList();
 }

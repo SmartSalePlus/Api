@@ -16,9 +16,11 @@ internal static class RepositoriesRegisterExtension {
     public static IServiceCollection AddRepositories(this IServiceCollection services) {
         services.AddScoped<IBuyerRepository, BuyerRepository>();
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+        services.AddScoped<IInvoiceDetailRepository, InvoiceDetailRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductPriceHistoryRepository, ProductPriceHistoryRepository>();
         services.AddScoped<IReceptionRepository, ReceptionRepository>();
+        services.AddScoped<IReceptionDetailRepository, ReceptionDetailRepository>();
 
         return services;
     }

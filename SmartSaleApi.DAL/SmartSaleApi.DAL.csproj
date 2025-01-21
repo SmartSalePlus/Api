@@ -19,4 +19,8 @@
     <ProjectReference Include="..\SmartSaleApi.Core\SmartSaleApi.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

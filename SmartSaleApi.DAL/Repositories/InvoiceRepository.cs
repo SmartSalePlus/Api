@@ -30,6 +30,8 @@ public sealed class InvoiceRepository(
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.ProductPriceHistories)
             .FirstOrDefault(x => x.Id == id)?
             .ToModel() ?? throw new ArgumentException($"Не найдена накладная по данному Id = {id}");
 
@@ -40,6 +42,8 @@ public sealed class InvoiceRepository(
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.ProductPriceHistories)
             .ToModel();
     }
 
@@ -48,15 +52,19 @@ public sealed class InvoiceRepository(
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.ProductPriceHistories)
             .Where(x => x.BuyerId == buyerId)
             .ToModel();
     }
 
-    public IEnumerable<Invoice> GetByDate(DateTime date) {
+    public IEnumerable<Invoice> GetByDate(DateOnly date) {
         return context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.ProductPriceHistories)
             .Where(x => x.Date == date)
             .ToModel();
     }

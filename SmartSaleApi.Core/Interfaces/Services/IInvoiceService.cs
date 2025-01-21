@@ -7,7 +7,7 @@ public interface IInvoiceService {
     void Update(Invoice invoice);
     void Delete(int id);
     Invoice Get(int id);
-    IEnumerable<Invoice> GetByDate(DateTime date);
+    IEnumerable<Invoice> GetByDate(DateOnly date);
     IEnumerable<Invoice> GetByBuyer(int buyerId);
     IEnumerable<Invoice> Get();
 }

@@ -7,7 +7,7 @@ public interface IReceptionRepository {
     void Update(Reception reception);
     void Delete(int id);
     Reception Get(int id);
-    IEnumerable<Reception> GetByDate(DateTime date);
+    IEnumerable<Reception> GetByDate(DateOnly date);
     IEnumerable<Reception> GetByProduct(int productId);
     IEnumerable<Reception> Get();
 }

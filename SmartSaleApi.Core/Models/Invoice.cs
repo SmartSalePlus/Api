@@ -2,7 +2,7 @@
 
 public sealed record Invoice(
     int Id,
-    DateTime Date,
+    DateOnly Date,
     double Total,
     double Discount,
     double TotalWithDiscount,

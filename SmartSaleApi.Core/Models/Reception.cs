@@ -2,6 +2,6 @@
 
 public sealed record Reception(
     int Id,
-    DateTime Date,
+    DateOnly Date,
     IEnumerable<ReceptionDetail> ReceptionDetails
 );

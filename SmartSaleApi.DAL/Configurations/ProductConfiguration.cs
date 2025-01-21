@@ -6,6 +6,8 @@ namespace SmartSaleApi.DAL.Configurations;
 
 internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product> {
     public void Configure(EntityTypeBuilder<Product> builder) {
+        builder.HasIndex(x => x.Name);
+
         builder.HasMany(x => x.ProductPriceHistories)
             .WithOne(x => x.Product)
             .HasForeignKey(x => x.ProductId);

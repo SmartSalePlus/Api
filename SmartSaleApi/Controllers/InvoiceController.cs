@@ -28,7 +28,7 @@ public sealed class InvoiceController(IInvoiceService service) : ControllerBase 
     }
 
     [HttpGet("date")]
-    public IEnumerable<Invoice> GetByDate(DateTime date) {
+    public IEnumerable<Invoice> GetByDate(DateOnly date) {
         return service.GetByDate(date);
     }
 

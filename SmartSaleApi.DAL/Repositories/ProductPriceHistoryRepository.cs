@@ -18,9 +18,9 @@ public sealed class ProductPriceHistoryRepository(SmartSaleDbContext context) : 
 
     public void Update(int productId) {
         context.ProductPriceHistories
-            .Where(x => x.ProductId == productId && x.DateEnd == DateTime.MaxValue)
+            .Where(x => x.ProductId == productId && x.DateEnd == DateOnly.MaxValue)
             .ExecuteUpdate(u => u
-                .SetProperty(p => p.DateEnd, DateTime.UtcNow)
+                .SetProperty(p => p.DateEnd, DateOnly.FromDateTime(DateTime.Today))
             );
     }
 }

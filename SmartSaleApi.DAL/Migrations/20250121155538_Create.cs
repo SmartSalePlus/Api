@@ -46,7 +46,7 @@ namespace SmartSaleApi.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Date = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,7 +60,7 @@ namespace SmartSaleApi.DAL.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     BuyerId = table.Column<int>(type: "integer", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
                     Total = table.Column<double>(type: "double precision", nullable: false),
                     Discount = table.Column<double>(type: "double precision", nullable: false),
                     TotalWithDiscount = table.Column<double>(type: "double precision", nullable: false),
@@ -85,8 +85,8 @@ namespace SmartSaleApi.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
-                    DateBegin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DateEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DateBegin = table.Column<DateOnly>(type: "date", nullable: false),
+                    DateEnd = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,6 +153,11 @@ namespace SmartSaleApi.DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Buyers_Name",
+                table: "Buyers",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InvoiceDetails_ProductId",
                 table: "InvoiceDetails",
                 column: "ProductId");
@@ -163,14 +168,29 @@ namespace SmartSaleApi.DAL.Migrations
                 column: "BuyerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Invoices_Date",
+                table: "Invoices",
+                column: "Date");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductPriceHistories_ProductId",
                 table: "ProductPriceHistories",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_Name",
+                table: "Products",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ReceptionDetails_ProductId",
                 table: "ReceptionDetails",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receptions_Date",
+                table: "Receptions",
+                column: "Date");
         }
 
         /// <inheritdoc />

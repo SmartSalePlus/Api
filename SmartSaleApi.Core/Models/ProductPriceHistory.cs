@@ -2,6 +2,6 @@
 
 public sealed record ProductPriceHistory(
     double Price,
-    DateTime DateBegin,
-    DateTime DateEnd
+    DateOnly DateBegin,
+    DateOnly DateEnd
 );

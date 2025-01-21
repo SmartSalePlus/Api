@@ -12,7 +12,7 @@ using SmartSaleApi.DAL.Contexts;
 namespace SmartSaleApi.DAL.Migrations
 {
     [DbContext(typeof(SmartSaleDbContext))]
-    [Migration("20250109184606_Create")]
+    [Migration("20250121155538_Create")]
     partial class Create
     {
         /// <inheritdoc />
@@ -39,6 +39,8 @@ namespace SmartSaleApi.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name");
+
                     b.ToTable("Buyers");
                 });
 
@@ -53,8 +55,8 @@ namespace SmartSaleApi.DAL.Migrations
                     b.Property<int>("BuyerId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
 
                     b.Property<double>("Discount")
                         .HasColumnType("double precision");
@@ -71,6 +73,8 @@ namespace SmartSaleApi.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BuyerId");
+
+                    b.HasIndex("Date");
 
                     b.ToTable("Invoices");
                 });
@@ -119,6 +123,8 @@ namespace SmartSaleApi.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name");
+
                     b.ToTable("Products");
                 });
 
@@ -130,11 +136,11 @@ namespace SmartSaleApi.DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateBegin")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("DateBegin")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("DateEnd")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("DateEnd")
+                        .HasColumnType("date");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
@@ -157,10 +163,12 @@ namespace SmartSaleApi.DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Date");
 
                     b.ToTable("Receptions");
                 });

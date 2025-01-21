@@ -14,5 +14,7 @@ public sealed class ReceptionDetailRepository(SmartSaleDbContext context) : IRec
             context.Attach(productEntity);
             context.ReceptionDetails.Add(receptionDetail.ToEntity(receptionEntity, productEntity));
         }
+
+        context.SaveChanges();
     }
 }

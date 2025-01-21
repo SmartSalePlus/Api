@@ -25,6 +25,8 @@ public sealed class ReceptionRepository(SmartSaleDbContext context) : IReception
         return context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.ProductPriceHistories)
             .FirstOrDefault(x => x.Id == id)?
             .ToModel() ?? throw new ArgumentException($"Не найдена приемка по данному Id = {id}");
     }
@@ -33,13 +35,17 @@ public sealed class ReceptionRepository(SmartSaleDbContext context) : IReception
         return context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.ProductPriceHistories)
             .ToModel();
     }
 
-    public IEnumerable<Reception> GetByDate(DateTime date) {
+    public IEnumerable<Reception> GetByDate(DateOnly date) {
         return context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.ProductPriceHistories)
             .Where(x => x.Date == date)
             .ToModel();
     }
@@ -47,9 +53,10 @@ public sealed class ReceptionRepository(SmartSaleDbContext context) : IReception
     public IEnumerable<Reception> GetByProduct(int productId) {
         return context.Receptions
             .AsNoTracking()
-            .Include(x => x.ReceptionDetails.Where(x => x.ProductId == productId))
-            //.ThenInclude(x => x.Product)
-            //.Where(x => x.ReceptionDetails.Any(x => x.ProductId == productId))
+            .Include(x => x.ReceptionDetails)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.ProductPriceHistories)
+            .Where(x => x.ReceptionDetails.Any(r => r.ProductId == productId))
             .ToModel();
     }
 

@@ -28,7 +28,7 @@ public sealed class ReceptionController(IReceptionService service) : ControllerB
     }
 
     [HttpGet("date")]
-    public IEnumerable<Reception> GetByDate(DateTime date) {
+    public IEnumerable<Reception> GetByDate(DateOnly date) {
         return service.GetByDate(date);
     }
 

@@ -17,17 +17,17 @@ public sealed class BuyerController(IBuyerService service) : ControllerBase {
         service.Update(buyer);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public void Delete(int id) {
         service.Delete(id);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public Buyer Get(int id) {
         return service.Get(id);
     }
 
-    [HttpGet("name")]
+    [HttpGet("name/{name}")]
     public IEnumerable<Buyer> Get(string name) {
         return service.Get(name);
     }

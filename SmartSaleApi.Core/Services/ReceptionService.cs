@@ -26,8 +26,8 @@ public sealed class ReceptionService(
         return repository.Get();
     }
 
-    public IEnumerable<Reception> GetByDate(DateOnly date) {
-        return repository.GetByDate(date);
+    public IEnumerable<Reception> Get(DateOnly date) {
+        return repository.Get(date);
     }
 
     public IEnumerable<Reception> GetByProduct(int productId) {

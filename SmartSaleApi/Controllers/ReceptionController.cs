@@ -17,22 +17,22 @@ public sealed class ReceptionController(IReceptionService service) : ControllerB
         service.Update(reception);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public void Delete(int id) {
         service.Delete(id);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public Reception Get(int id) {
         return service.Get(id);
     }
 
-    [HttpGet("date")]
-    public IEnumerable<Reception> GetByDate(DateOnly date) {
-        return service.GetByDate(date);
+    [HttpGet("date/{date}")]
+    public IEnumerable<Reception> Get(DateOnly date) {
+        return service.Get(date);
     }
 
-    [HttpGet("productId")]
+    [HttpGet("{productId}")]
     public IEnumerable<Reception> GetByProduct(int productId) {
         return service.GetByProduct(productId);
     }

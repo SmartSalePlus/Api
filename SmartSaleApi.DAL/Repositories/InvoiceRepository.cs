@@ -58,7 +58,7 @@ public sealed class InvoiceRepository(
             .ToModel();
     }
 
-    public IEnumerable<Invoice> GetByDate(DateOnly date) {
+    public IEnumerable<Invoice> Get(DateOnly date) {
         return context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)

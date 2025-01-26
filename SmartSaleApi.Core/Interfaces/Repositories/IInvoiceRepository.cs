@@ -7,7 +7,7 @@ public interface IInvoiceRepository {
     void Update(Invoice invoice);
     void Delete(int id);
     Invoice Get(int id);
-    IEnumerable<Invoice> GetByDate(DateOnly date);
+    IEnumerable<Invoice> Get(DateOnly date);
     IEnumerable<Invoice> GetByBuyer(int buyerId);
     IEnumerable<Invoice> Get();
 }

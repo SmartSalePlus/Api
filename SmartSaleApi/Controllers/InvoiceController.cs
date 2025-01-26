@@ -17,22 +17,22 @@ public sealed class InvoiceController(IInvoiceService service) : ControllerBase 
         service.Update(invoice);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public void Delete(int id) {
         service.Delete(id);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public Invoice Get(int id) {
         return service.Get(id);
     }
 
-    [HttpGet("date")]
-    public IEnumerable<Invoice> GetByDate(DateOnly date) {
-        return service.GetByDate(date);
+    [HttpGet("date/{date}")]
+    public IEnumerable<Invoice> Get(DateOnly date) {
+        return service.Get(date);
     }
 
-    [HttpGet("buyerId")]
+    [HttpGet("{buyerId}")]
     public IEnumerable<Invoice> GetByBuyer(int buyerId) {
         return service.GetByBuyer(buyerId);
     }

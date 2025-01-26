@@ -40,7 +40,7 @@ public sealed class ReceptionRepository(SmartSaleDbContext context) : IReception
             .ToModel();
     }
 
-    public IEnumerable<Reception> GetByDate(DateOnly date) {
+    public IEnumerable<Reception> Get(DateOnly date) {
         return context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)

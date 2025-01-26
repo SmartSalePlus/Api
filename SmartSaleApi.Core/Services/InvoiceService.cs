@@ -30,8 +30,8 @@ public sealed class InvoiceService(
         return repository.GetByBuyer(buyerId);
     }
 
-    public IEnumerable<Invoice> GetByDate(DateOnly date) {
-        return repository.GetByDate(date);
+    public IEnumerable<Invoice> Get(DateOnly date) {
+        return repository.Get(date);
     }
 
     public void Update(Invoice invoice) {

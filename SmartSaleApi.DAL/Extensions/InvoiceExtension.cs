@@ -4,8 +4,11 @@ using DAL = SmartSaleApi.DAL.Entities;
 namespace SmartSaleApi.DAL.Extensions;
 
 internal static class InvoiceExtension {
-    public static Core::Invoice ToModel(this DAL::Invoice src)
-        => new(
+    public static Core::Invoice ToModel(this DAL::Invoice src) {
+        ArgumentNullException.ThrowIfNull(src);
+        ArgumentNullException.ThrowIfNull(src.Buyer);
+
+        return new(
             src.Id,
             src.Date,
             src.Total,
@@ -15,19 +18,20 @@ internal static class InvoiceExtension {
             src.Buyer.ToModel(),
             src.InvoiceDetails.ToModel()
         );
+    }
 
     public static IEnumerable<Core::Invoice> ToModel(this IEnumerable<DAL::Invoice> src)
         => src.Select(x => x.ToModel());
 
-    public static DAL::Invoice ToEntity(this Core::Invoice src, DAL::Buyer buyer)
+    public static DAL::Invoice ToEntity(this Core::Invoice src)
         => new() {
             Id = src.Id,
-            BuyerId = buyer.Id,
             Date = src.Date,
             Total = src.Total,
             Discount = src.Discount,
             TotalWithDiscount = src.TotalWithDiscount,
             IsPaid = src.IsPaid,
-            Buyer = buyer
+            BuyerId = src.Buyer.Id,
+            InvoiceDetails = src.InvoiceDetails.ToEntity()
         };
 }

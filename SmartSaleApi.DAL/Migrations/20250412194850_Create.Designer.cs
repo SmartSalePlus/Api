@@ -12,7 +12,7 @@ using SmartSaleApi.DAL.Contexts;
 namespace SmartSaleApi.DAL.Migrations
 {
     [DbContext(typeof(SmartSaleDbContext))]
-    [Migration("20250121155538_Create")]
+    [Migration("20250412194850_Create")]
     partial class Create
     {
         /// <inheritdoc />
@@ -121,38 +121,14 @@ namespace SmartSaleApi.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("SmartSaleApi.DAL.Entities.ProductPriceHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly>("DateBegin")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("DateEnd")
-                        .HasColumnType("date");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductPriceHistories");
                 });
 
             modelBuilder.Entity("SmartSaleApi.DAL.Entities.Reception", b =>
@@ -224,17 +200,6 @@ namespace SmartSaleApi.DAL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.DAL.Entities.ProductPriceHistory", b =>
-                {
-                    b.HasOne("SmartSaleApi.DAL.Entities.Product", "Product")
-                        .WithMany("ProductPriceHistories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("SmartSaleApi.DAL.Entities.ReceptionDetail", b =>
                 {
                     b.HasOne("SmartSaleApi.DAL.Entities.Product", "Product")
@@ -267,8 +232,6 @@ namespace SmartSaleApi.DAL.Migrations
             modelBuilder.Entity("SmartSaleApi.DAL.Entities.Product", b =>
                 {
                     b.Navigation("InvoiceDetails");
-
-                    b.Navigation("ProductPriceHistories");
 
                     b.Navigation("ReceptionDetails");
                 });

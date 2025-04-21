@@ -5,6 +5,6 @@ internal sealed class ReceptionDetail {
     public int ProductId { get; set; }
     public int Count { get; set; }
     public double Price { get; set; }
-    public required Reception Reception { get; set; }
-    public required Product Product { get; set; }
+    public Reception? Reception { get; set; }
+    public Product? Product { get; set; }
 }

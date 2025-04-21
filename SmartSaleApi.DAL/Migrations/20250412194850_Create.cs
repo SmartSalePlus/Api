@@ -33,7 +33,8 @@ namespace SmartSaleApi.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Count = table.Column<int>(type: "integer", nullable: false),
-                    CountInPackage = table.Column<int>(type: "integer", nullable: false)
+                    CountInPackage = table.Column<int>(type: "integer", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,28 +74,6 @@ namespace SmartSaleApi.DAL.Migrations
                         name: "FK_Invoices_Buyers_BuyerId",
                         column: x => x.BuyerId,
                         principalTable: "Buyers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductPriceHistories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
-                    DateBegin = table.Column<DateOnly>(type: "date", nullable: false),
-                    DateEnd = table.Column<DateOnly>(type: "date", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductPriceHistories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductPriceHistories_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -173,11 +152,6 @@ namespace SmartSaleApi.DAL.Migrations
                 column: "Date");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductPriceHistories_ProductId",
-                table: "ProductPriceHistories",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_Name",
                 table: "Products",
                 column: "Name");
@@ -198,9 +172,6 @@ namespace SmartSaleApi.DAL.Migrations
         {
             migrationBuilder.DropTable(
                 name: "InvoiceDetails");
-
-            migrationBuilder.DropTable(
-                name: "ProductPriceHistories");
 
             migrationBuilder.DropTable(
                 name: "ReceptionDetails");

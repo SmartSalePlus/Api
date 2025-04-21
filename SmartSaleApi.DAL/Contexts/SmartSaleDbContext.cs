@@ -8,7 +8,6 @@ public sealed class SmartSaleDbContext(DbContextOptions<SmartSaleDbContext> opti
     internal DbSet<Buyer> Buyers { get; set; }
     internal DbSet<Invoice> Invoices { get; set; }
     internal DbSet<InvoiceDetail> InvoiceDetails { get; set; }
-    internal DbSet<ProductPriceHistory> ProductPriceHistories { get; set; }
     internal DbSet<Product> Products { get; set; }
     internal DbSet<Reception> Receptions { get; set; }
     internal DbSet<ReceptionDetail> ReceptionDetails { get; set; }

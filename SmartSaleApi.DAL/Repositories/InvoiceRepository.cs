@@ -6,71 +6,68 @@ using SmartSaleApi.DAL.Extensions;
 
 namespace SmartSaleApi.DAL.Repositories;
 
-public sealed class InvoiceRepository(
-    SmartSaleDbContext context
-) : IInvoiceRepository {
-    public int Add(Invoice invoice) {
-        var buyerEntity = invoice.Buyer.ToEntity();
-        var entity = invoice.ToEntity(buyerEntity);
-        context.Attach(buyerEntity);
-        context.Invoices.Add(entity);
-        context.SaveChanges();
+public sealed class InvoiceRepository : IInvoiceRepository {
+    private readonly SmartSaleDbContext _context;
 
-        return entity.Id;
+    public InvoiceRepository(SmartSaleDbContext context) {
+        _context = context;
+    }
+
+    public void Add(Invoice invoice) {
+        _context.Invoices.Add(invoice.ToEntity());
+        _context.SaveChanges();
     }
 
     public void Delete(int id) {
-        context.Invoices
+        _context.Invoices
             .Where(x => x.Id == id)
             .ExecuteDelete();
     }
 
     public Invoice Get(int id) {
-        return context.Invoices
+        var invoice = _context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
             .ThenInclude(x => x.Product)
-            .ThenInclude(x => x.ProductPriceHistories)
-            .FirstOrDefault(x => x.Id == id)?
-            .ToModel() ?? throw new ArgumentException($"Не найдена накладная по данному Id = {id}");
+            .FirstOrDefault(x => x.Id == id);
 
+        ArgumentNullException.ThrowIfNull(invoice);
+
+        return invoice.ToModel();
     }
 
     public IEnumerable<Invoice> Get() {
-        return context.Invoices
+        return _context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
             .ThenInclude(x => x.Product)
-            .ThenInclude(x => x.ProductPriceHistories)
             .ToModel();
     }
 
     public IEnumerable<Invoice> GetByBuyer(int buyerId) {
-        return context.Invoices
+        return _context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
             .ThenInclude(x => x.Product)
-            .ThenInclude(x => x.ProductPriceHistories)
             .Where(x => x.BuyerId == buyerId)
             .ToModel();
     }
 
     public IEnumerable<Invoice> Get(DateOnly date) {
-        return context.Invoices
+        return _context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
             .ThenInclude(x => x.Product)
-            .ThenInclude(x => x.ProductPriceHistories)
             .Where(x => x.Date == date)
             .ToModel();
     }
 
     public void Update(Invoice invoice) {
-        context.Invoices
+        _context.Invoices
             .Where(x => x.Id == invoice.Id)
             .ExecuteUpdate(u => u
                 .SetProperty(p => p.Date, invoice.Date)

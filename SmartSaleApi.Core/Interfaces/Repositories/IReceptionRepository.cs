@@ -3,7 +3,7 @@
 namespace SmartSaleApi.Core.Interfaces.Repositories;
 
 public interface IReceptionRepository {
-    int Add(Reception reception);
+    void Add(Reception reception);
     void Update(Reception reception);
     void Delete(int id);
     Reception Get(int id);

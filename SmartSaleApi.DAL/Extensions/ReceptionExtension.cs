@@ -17,6 +17,7 @@ internal static class ReceptionExtension {
     public static DAL::Reception ToEntity(this Core::Reception src)
         => new() {
             Id = src.Id,
-            Date = src.Date
+            Date = src.Date,
+            ReceptionDetails = src.ReceptionDetails.ToEntity()
         };
 }

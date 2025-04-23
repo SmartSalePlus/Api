@@ -3,7 +3,7 @@
 namespace SmartSaleApi.Core.Interfaces.Repositories;
 
 public interface IProductRepository {
-    int Add(Product product);
+    void Add(Product product);
     void Update(Product product);
     void Delete(int id);
     Product Get(int id);

@@ -8,6 +8,6 @@ internal sealed class Invoice {
     public double Discount { get; set; }
     public double TotalWithDiscount { get; set; }
     public bool IsPaid { get; set; }
-    public required Buyer Buyer { get; set; }
+    public Buyer? Buyer { get; set; }
     public ICollection<InvoiceDetail> InvoiceDetails { get; set; } = [];
 }

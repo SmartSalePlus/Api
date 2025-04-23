@@ -6,62 +6,64 @@ using SmartSaleApi.DAL.Extensions;
 
 namespace SmartSaleApi.DAL.Repositories;
 
-public sealed class ReceptionRepository(SmartSaleDbContext context) : IReceptionRepository {
-    public int Add(Reception reception) {
-        var entity = reception.ToEntity();
-        context.Receptions.Add(entity);
-        context.SaveChanges();
+public sealed class ReceptionRepository : IReceptionRepository {
+    private readonly SmartSaleDbContext _context;
 
-        return entity.Id;
+    public ReceptionRepository(SmartSaleDbContext context) {
+        _context = context;
+    }
+
+    public void Add(Reception reception) {
+        _context.Receptions.Add(reception.ToEntity());
+        _context.SaveChanges();
     }
 
     public void Delete(int id) {
-        context.Receptions
+        _context.Receptions
             .Where(x => x.Id == id)
             .ExecuteDelete();
     }
 
     public Reception Get(int id) {
-        return context.Receptions
+        var reception = _context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
             .ThenInclude(x => x.Product)
-            .ThenInclude(x => x.ProductPriceHistories)
-            .FirstOrDefault(x => x.Id == id)?
-            .ToModel() ?? throw new ArgumentException($"Не найдена приемка по данному Id = {id}");
+            .FirstOrDefault(x => x.Id == id);
+
+        ArgumentNullException.ThrowIfNull(reception);
+
+        return reception.ToModel();
     }
 
     public IEnumerable<Reception> Get() {
-        return context.Receptions
+        return _context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
             .ThenInclude(x => x.Product)
-            .ThenInclude(x => x.ProductPriceHistories)
             .ToModel();
     }
 
     public IEnumerable<Reception> Get(DateOnly date) {
-        return context.Receptions
+        return _context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
             .ThenInclude(x => x.Product)
-            .ThenInclude(x => x.ProductPriceHistories)
             .Where(x => x.Date == date)
             .ToModel();
     }
 
     public IEnumerable<Reception> GetByProduct(int productId) {
-        return context.Receptions
+        return _context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
             .ThenInclude(x => x.Product)
-            .ThenInclude(x => x.ProductPriceHistories)
             .Where(x => x.ReceptionDetails.Any(r => r.ProductId == productId))
             .ToModel();
     }
 
     public void Update(Reception reception) {
-        context.Receptions
+        _context.Receptions
             .Where(x => x.Id == reception.Id)
             .ExecuteUpdate(u => u
                 .SetProperty(p => p.Date, reception.Date)

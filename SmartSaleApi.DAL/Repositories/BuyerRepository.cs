@@ -6,28 +6,36 @@ using SmartSaleApi.DAL.Extensions;
 
 namespace SmartSaleApi.DAL.Repositories;
 
-public sealed class BuyerRepository(SmartSaleDbContext context) : IBuyerRepository {
+public sealed class BuyerRepository : IBuyerRepository {
+    private readonly SmartSaleDbContext _context;
+
+    public BuyerRepository(SmartSaleDbContext context) {
+        _context = context;
+    }
+
     public void Add(Buyer buyer) {
-        var entity = buyer.ToEntity();
-        context.Buyers.Add(entity);
-        context.SaveChanges();
+        _context.Buyers.Add(buyer.ToEntity());
+        _context.SaveChanges();
     }
 
     public void Delete(int id) {
-        context.Buyers
+        _context.Buyers
             .Where(x => x.Id == id)
             .ExecuteDelete();
     }
 
     public Buyer Get(int id) {
-        return context.Buyers
+        var buyer = _context.Buyers
             .AsNoTracking()
-            .FirstOrDefault(x => x.Id == id)?
-            .ToModel() ?? throw new ArgumentException($"Не найден покупатель по данному Id = {id}");
+            .FirstOrDefault(x => x.Id == id);
+
+        ArgumentNullException.ThrowIfNull(buyer);
+
+        return buyer.ToModel();
     }
 
     public IEnumerable<Buyer> Get(string name) {
-        return context.Buyers
+        return _context.Buyers
             .AsNoTracking()
             .Where(x => x.Name.ToLower().Contains(name.ToLower()))
             .OrderBy(x => x.Name)
@@ -35,14 +43,14 @@ public sealed class BuyerRepository(SmartSaleDbContext context) : IBuyerReposito
     }
 
     public IEnumerable<Buyer> Get() {
-        return context.Buyers
+        return _context.Buyers
             .AsNoTracking()
             .OrderBy(x => x.Name)
             .ToModel();
     }
 
     public void Update(Buyer buyer) {
-        context.Buyers
+        _context.Buyers
             .Where(x => x.Id == buyer.Id)
             .ExecuteUpdate(u => u
                 .SetProperty(p => p.Name, buyer.Name)

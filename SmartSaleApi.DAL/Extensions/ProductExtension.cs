@@ -10,14 +10,11 @@ internal static class ProductExtension {
             src.Name,
             src.Count,
             src.CountInPackage,
-            src.ProductPriceHistories.First(x => x.DateEnd == DateOnly.MaxValue).Price,
-            src.ProductPriceHistories.ToModel()
+            src.Price
         );
 
     public static IEnumerable<Core::Product> ToModel(this IEnumerable<DAL::Product> src)
         => src.Select(x => x.ToModel());
-    public static Core::ProductPriceHistory CreateProductPriceHistory(this Core::Product src)
-        => new(src.Price, DateOnly.FromDateTime(DateTime.Today), DateOnly.MaxValue);
 
     public static DAL::Product ToEntity(this Core::Product src)
         => new() {
@@ -25,5 +22,6 @@ internal static class ProductExtension {
             Name = src.Name,
             Count = src.Count,
             CountInPackage = src.CountInPackage,
+            Price = src.Price
         };
 }

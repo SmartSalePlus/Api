@@ -3,7 +3,7 @@
 namespace SmartSaleApi.Core.Interfaces.Repositories;
 
 public interface IInvoiceRepository {
-    int Add(Invoice invoice);
+    void Add(Invoice invoice);
     void Update(Invoice invoice);
     void Delete(int id);
     Invoice Get(int id);

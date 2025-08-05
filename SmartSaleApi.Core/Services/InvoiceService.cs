@@ -1,4 +1,5 @@
-﻿using SmartSaleApi.Core.Interfaces.Repositories;
+﻿using SmartSaleApi.Core.InputParameters;
+using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
@@ -20,7 +21,7 @@ public sealed class InvoiceService : IInvoiceService {
 
         _repository.Add(invoice);
         foreach (var invoiceDetail in invoice.InvoiceDetails) {
-            var product = _productService.Get(invoiceDetail.Product.Id);
+            var product = _productService.Get(invoiceDetail.ProductId);
             var updatedProduct = product with { Count = product.Count - invoiceDetail.Count };
 
             _productService.Update(updatedProduct);
@@ -39,12 +40,8 @@ public sealed class InvoiceService : IInvoiceService {
         return _repository.Get();
     }
 
-    public IEnumerable<Invoice> GetByBuyer(int buyerId) {
-        return _repository.GetByBuyer(buyerId);
-    }
-
-    public IEnumerable<Invoice> Get(DateOnly date) {
-        return _repository.Get(date);
+    public IEnumerable<Invoice> Get(InvoiceInputParameter parameter) {
+        return _repository.Get(parameter);
     }
 
     public void Update(Invoice invoice) {

@@ -1,4 +1,4 @@
-using SmartSaleApi.Extensions;
+using SmartSaleApi.Extensions.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 

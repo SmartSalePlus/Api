@@ -1,44 +1,69 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
+using SmartSaleApi.Extensions.Mapping;
+using SmartSaleApi.ViewModel;
 
 namespace SmartSaleApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public sealed class InvoiceController(IInvoiceService service) : ControllerBase {
+public sealed class InvoiceController : ControllerBase {
+    private readonly IInvoiceService _invoiceService;
+    private readonly IBuyerService _buyerService;
+    private readonly IProductService _productService;
+
+    public InvoiceController(IInvoiceService invoiceService, IBuyerService buyerService, IProductService productService) {
+        _invoiceService = invoiceService;
+        _buyerService = buyerService;
+        _productService = productService;
+    }
+
     [HttpPost]
     public void Add([FromBody] Invoice invoice) {
-        service.Add(invoice);
+        _invoiceService.Add(invoice);
     }
 
     [HttpPut]
     public void Update([FromBody] Invoice invoice) {
-        service.Update(invoice);
+        _invoiceService.Update(invoice);
     }
 
     [HttpDelete("{id}")]
     public void Delete(int id) {
-        service.Delete(id);
+        _invoiceService.Delete(id);
     }
 
     [HttpGet("{id}")]
-    public Invoice Get(int id) {
-        return service.Get(id);
+    public InvoiceViewModel Get(int id) {
+        var invoice = _invoiceService.Get(id);
+        return GetInvoiceViewModel(invoice);
     }
 
-    [HttpGet("date/{date}")]
-    public IEnumerable<Invoice> Get(DateOnly date) {
-        return service.Get(date);
-    }
-
-    [HttpGet("{buyerId}")]
-    public IEnumerable<Invoice> GetByBuyer(int buyerId) {
-        return service.GetByBuyer(buyerId);
+    [HttpPost]
+    public IEnumerable<InvoiceViewModel> Get([FromBody] InvoiceInputParameter parameter) {
+        var invoices = _invoiceService.Get(parameter);
+        return invoices.Select(x => GetInvoiceViewModel(x))
+            .OrderByDescending(x => x.Date)
+            .ThenByDescending(x => x.Buyer.Name);
     }
 
     [HttpGet]
-    public IEnumerable<Invoice> Get() {
-        return service.Get();
+    public IEnumerable<InvoiceViewModel> Get() {
+        var invoices = _invoiceService.Get();
+        return invoices.Select(x => GetInvoiceViewModel(x))
+            .OrderByDescending(x => x.Date)
+            .ThenByDescending(x => x.Buyer.Name);
+    }
+
+    private InvoiceViewModel GetInvoiceViewModel(Invoice invoice) {
+        var buyer = _buyerService.Get(invoice.BuyerId);
+        var invoiceDetailViewModels = GetInvoiceDetailViewModels(invoice.InvoiceDetails);
+        return invoice.ToViewModel(buyer, invoiceDetailViewModels);
+    }
+
+    private IEnumerable<InvoiceDetailViewModel> GetInvoiceDetailViewModels(IEnumerable<InvoiceDetail> invoiceDetails) {
+        return invoiceDetails.Select(x => x.ToViewModel(_productService.Get(x.ProductId)));
     }
 }

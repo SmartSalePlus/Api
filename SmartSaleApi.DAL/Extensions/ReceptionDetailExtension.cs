@@ -11,7 +11,7 @@ internal static class ReceptionDetailExtension {
         return new(
             src.Count,
             src.Price,
-            src.Product.ToModel()
+            src.ProductId
         );
     }
 
@@ -20,7 +20,7 @@ internal static class ReceptionDetailExtension {
 
     public static DAL::ReceptionDetail ToEntity(this Core::ReceptionDetail src)
         => new() {
-            ProductId = src.Product.Id,
+            ProductId = src.ProductId,
             Count = src.Count,
             Price = src.Price
         };

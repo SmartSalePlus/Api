@@ -20,7 +20,7 @@ public sealed class ReceptionService : IReceptionService {
 
         _repository.Add(reception);
         foreach (var receptionDetail in reception.ReceptionDetails) {
-            var product = _productService.Get(receptionDetail.Product.Id);
+            var product = _productService.Get(receptionDetail.ProductId);
             var updatedProduct = product with { Count = product.Count + receptionDetail.Count };
 
             _productService.Update(updatedProduct);

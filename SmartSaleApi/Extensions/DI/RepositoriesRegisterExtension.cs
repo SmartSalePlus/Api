@@ -3,7 +3,7 @@ using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.DAL.Contexts;
 using SmartSaleApi.DAL.Repositories;
 
-namespace SmartSaleApi.Extensions;
+namespace SmartSaleApi.Extensions.DI;
 
 internal static class RepositoriesRegisterExtension {
     public static IServiceCollection AddContexts(this IServiceCollection services, IConfiguration configuration) {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Models;
 using SmartSaleApi.DAL.Contexts;
@@ -46,23 +47,15 @@ public sealed class InvoiceRepository : IInvoiceRepository {
             .ToModel();
     }
 
-    public IEnumerable<Invoice> GetByBuyer(int buyerId) {
+    public IEnumerable<Invoice> Get(InvoiceInputParameter parameter) {
         return _context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
             .ThenInclude(x => x.Product)
-            .Where(x => x.BuyerId == buyerId)
-            .ToModel();
-    }
-
-    public IEnumerable<Invoice> Get(DateOnly date) {
-        return _context.Invoices
-            .AsNoTracking()
-            .Include(x => x.Buyer)
-            .Include(x => x.InvoiceDetails)
-            .ThenInclude(x => x.Product)
-            .Where(x => x.Date == date)
+            .Where(x => x.Date >= parameter.DateBegin && x.Date <= parameter.DateEnd
+                && x.IsPaid == parameter.IsPaid
+                && (parameter.BuyerId == null || x.BuyerId == parameter.BuyerId))
             .ToModel();
     }
 

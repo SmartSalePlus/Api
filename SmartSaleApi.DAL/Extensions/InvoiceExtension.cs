@@ -15,7 +15,7 @@ internal static class InvoiceExtension {
             src.Discount,
             src.TotalWithDiscount,
             src.IsPaid,
-            src.Buyer.ToModel(),
+            src.BuyerId,
             src.InvoiceDetails.ToModel()
         );
     }
@@ -31,7 +31,7 @@ internal static class InvoiceExtension {
             Discount = src.Discount,
             TotalWithDiscount = src.TotalWithDiscount,
             IsPaid = src.IsPaid,
-            BuyerId = src.Buyer.Id,
+            BuyerId = src.BuyerId,
             InvoiceDetails = src.InvoiceDetails.ToEntity()
         };
 }

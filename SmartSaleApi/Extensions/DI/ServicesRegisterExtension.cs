@@ -1,7 +1,7 @@
 ﻿using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Services;
 
-namespace SmartSaleApi.Extensions;
+namespace SmartSaleApi.Extensions.DI;
 
 internal static class ServicesRegisterExtension {
     public static IServiceCollection AddServices(this IServiceCollection services) {

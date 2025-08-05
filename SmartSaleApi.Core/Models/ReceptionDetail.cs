@@ -3,5 +3,5 @@
 public sealed record ReceptionDetail(
     int Count,
     double Price,
-    Product Product
+    int ProductId
 );

@@ -7,6 +7,6 @@ public sealed record Invoice(
     double Discount,
     double TotalWithDiscount,
     bool IsPaid,
-    Buyer Buyer,
+    int BuyerId,
     IEnumerable<InvoiceDetail> InvoiceDetails
 );

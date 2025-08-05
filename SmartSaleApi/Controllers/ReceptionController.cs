@@ -1,44 +1,67 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
+using SmartSaleApi.Extensions.Mapping;
+using SmartSaleApi.ViewModels;
 
 namespace SmartSaleApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public sealed class ReceptionController(IReceptionService service) : ControllerBase {
+public sealed class ReceptionController : ControllerBase {
+    private readonly IReceptionService _receptionService;
+    private readonly IProductService _productService;
+
+    public ReceptionController(IReceptionService receptionService, IProductService productService) {
+        _receptionService = receptionService;
+        _productService = productService;
+    }
+
     [HttpPost]
     public void Add([FromBody] Reception reception) {
-        service.Add(reception);
+        _receptionService.Add(reception);
     }
 
     [HttpPut]
     public void Update([FromBody] Reception reception) {
-        service.Update(reception);
+        _receptionService.Update(reception);
     }
 
     [HttpDelete("{id}")]
     public void Delete(int id) {
-        service.Delete(id);
+        _receptionService.Delete(id);
     }
 
     [HttpGet("{id}")]
-    public Reception Get(int id) {
-        return service.Get(id);
+    public ReceptionViewModel Get(int id) {
+        var reception = _receptionService.Get(id);   
+        return GetReceptionViewModel(reception);
     }
 
     [HttpGet("date/{date}")]
-    public IEnumerable<Reception> Get(DateOnly date) {
-        return service.Get(date);
+    public IEnumerable<ReceptionViewModel> Get(DateOnly date) {
+        var receptions = _receptionService.Get(date);
+        return receptions.Select(x => GetReceptionViewModel(x));
     }
 
     [HttpGet("{productId}")]
-    public IEnumerable<Reception> GetByProduct(int productId) {
-        return service.GetByProduct(productId);
+    public IEnumerable<ReceptionViewModel> GetByProduct(int productId) {
+        var receptions = _receptionService.GetByProduct(productId);
+        return receptions.Select(x => GetReceptionViewModel(x));
     }
 
     [HttpGet]
-    public IEnumerable<Reception> Get() {  
-        return service.Get();
+    public IEnumerable<ReceptionViewModel> Get() {
+        var receptions = _receptionService.Get();
+        return receptions.Select(x => GetReceptionViewModel(x));
+    }
+
+    private ReceptionViewModel GetReceptionViewModel(Reception reception) {
+        var receptionDetailViewModels = GetReceptionDetailViewModel(reception.ReceptionDetails);
+        return reception.ToViewModel(receptionDetailViewModels);
+    }
+
+    private IEnumerable<ReceptionDetailViewModel> GetReceptionDetailViewModel(IEnumerable<ReceptionDetail> receptionDetails) {
+        return receptionDetails.Select(x => x.ToViewModel(_productService.Get(x.ProductId)));
     }
 }

@@ -12,7 +12,7 @@ internal static class InvoiceDetailExtension {
             src.Count,
             src.Price,
             src.Total,
-            src.Product.ToModel()
+            src.ProductId
         );
     }
     public static IEnumerable<Core::InvoiceDetail> ToModel(this IEnumerable<DAL::InvoiceDetail> src)
@@ -20,7 +20,7 @@ internal static class InvoiceDetailExtension {
 
     public static DAL::InvoiceDetail ToEntity(this Core::InvoiceDetail src)
         => new() {
-            ProductId = src.Product.Id,
+            ProductId = src.ProductId,
             Count = src.Count,
             Price = src.Price,
             Total = src.Total,

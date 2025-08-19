@@ -14,7 +14,7 @@ internal static class ProductExtension {
         );
 
     public static IEnumerable<Core::Product> ToModel(this IEnumerable<DAL::Product> src)
-        => src.Select(x => x.ToModel());
+        => src.Select(x => x.ToModel()).ToList();
 
     public static DAL::Product ToEntity(this Core::Product src)
         => new() {

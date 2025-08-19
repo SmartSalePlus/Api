@@ -2,7 +2,7 @@
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
-namespace SmartSaleApi.Core.Services;
+namespace SmartSaleApi.Application.Services;
 
 public sealed class BuyerService : IBuyerService {
     private readonly IBuyerRepository _repository;

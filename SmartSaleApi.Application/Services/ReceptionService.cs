@@ -2,7 +2,7 @@
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
-namespace SmartSaleApi.Core.Services;
+namespace SmartSaleApi.Application.Services;
 
 public sealed class ReceptionService : IReceptionService {
     private readonly IReceptionRepository _repository;
@@ -19,8 +19,10 @@ public sealed class ReceptionService : IReceptionService {
         }
 
         _repository.Add(reception);
+
+        var products = _productService.Get(reception.ReceptionDetails.Select(x => x.ProductId).ToArray());
         foreach (var receptionDetail in reception.ReceptionDetails) {
-            var product = _productService.Get(receptionDetail.ProductId);
+            var product = products.First(x=>x.Id == receptionDetail.ProductId);
             var updatedProduct = product with { Count = product.Count + receptionDetail.Count };
 
             _productService.Update(updatedProduct);

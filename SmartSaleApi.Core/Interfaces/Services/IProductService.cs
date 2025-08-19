@@ -9,4 +9,5 @@ public interface IProductService {
     Product Get(int id);
     IEnumerable<Product> Get(string name);
     IEnumerable<Product> Get();
+    IEnumerable<Product> Get(params int[] ids);
 }

@@ -13,11 +13,18 @@ public sealed class InvoiceController : ControllerBase {
     private readonly IInvoiceService _invoiceService;
     private readonly IBuyerService _buyerService;
     private readonly IProductService _productService;
+    private readonly IInvoiceReportService _reportService;
 
-    public InvoiceController(IInvoiceService invoiceService, IBuyerService buyerService, IProductService productService) {
+    public InvoiceController(
+        IInvoiceService invoiceService, 
+        IBuyerService buyerService, 
+        IProductService productService, 
+        IInvoiceReportService invoiceReportService
+    ) {
         _invoiceService = invoiceService;
         _buyerService = buyerService;
         _productService = productService;
+        _reportService = invoiceReportService;
     }
 
     [HttpPost]
@@ -57,6 +64,12 @@ public sealed class InvoiceController : ControllerBase {
             .ThenByDescending(x => x.Buyer.Name);
     }
 
+    [HttpGet]
+    public FileStreamResult GetFile(int invoiceId) {
+        var (name, memoryStream) = _reportService.GetMemoryStream(invoiceId);
+        return File(memoryStream, "application/unknown", name);
+    }
+
     private InvoiceViewModel GetInvoiceViewModel(Invoice invoice) {
         var buyer = _buyerService.Get(invoice.BuyerId);
         var invoiceDetailViewModels = GetInvoiceDetailViewModels(invoice.InvoiceDetails);
@@ -64,6 +77,7 @@ public sealed class InvoiceController : ControllerBase {
     }
 
     private IEnumerable<InvoiceDetailViewModel> GetInvoiceDetailViewModels(IEnumerable<InvoiceDetail> invoiceDetails) {
-        return invoiceDetails.Select(x => x.ToViewModel(_productService.Get(x.ProductId)));
+        var products = _productService.Get(invoiceDetails.Select(x => x.ProductId).ToArray());
+        return invoiceDetails.Select(x => x.ToViewModel(products.First(p => p.Id == x.ProductId)));
     }
 }

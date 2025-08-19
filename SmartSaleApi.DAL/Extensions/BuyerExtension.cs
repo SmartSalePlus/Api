@@ -11,7 +11,7 @@ internal static class BuyerExtension {
         );
 
     public static IEnumerable<Core::Buyer> ToModel(this IEnumerable<DAL::Buyer> src)
-        => src.Select(x => x.ToModel());
+        => src.Select(x => x.ToModel()).ToList();
 
     public static DAL::Buyer ToEntity(this Core::Buyer src)
         => new() { 

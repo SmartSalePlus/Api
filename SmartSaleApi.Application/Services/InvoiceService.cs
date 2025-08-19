@@ -3,7 +3,7 @@ using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
-namespace SmartSaleApi.Core.Services;
+namespace SmartSaleApi.Application.Services;
 
 public sealed class InvoiceService : IInvoiceService {
     private readonly IInvoiceRepository _repository;
@@ -20,8 +20,10 @@ public sealed class InvoiceService : IInvoiceService {
         }
 
         _repository.Add(invoice);
+
+        var products = _productService.Get(invoice.InvoiceDetails.Select(x => x.ProductId).ToArray());
         foreach (var invoiceDetail in invoice.InvoiceDetails) {
-            var product = _productService.Get(invoiceDetail.ProductId);
+            var product = products.First(x => x.Id == invoiceDetail.ProductId);
             var updatedProduct = product with { Count = product.Count - invoiceDetail.Count };
 
             _productService.Update(updatedProduct);

@@ -1,5 +1,5 @@
 ﻿using SmartSaleApi.Core.Interfaces.Services;
-using SmartSaleApi.Core.Services;
+using SmartSaleApi.Application.Services;
 
 namespace SmartSaleApi.Extensions.DI;
 
@@ -9,6 +9,8 @@ internal static class ServicesRegisterExtension {
         services.AddScoped<IInvoiceService, InvoiceService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IReceptionService, ReceptionService>();
+        services.AddScoped<IInvoiceReportService, InvoicePdfService>();
+        services.AddScoped<IProductReportService, ProductPdfService>();
 
         return services;
     }

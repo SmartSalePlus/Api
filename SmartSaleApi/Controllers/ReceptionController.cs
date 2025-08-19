@@ -34,7 +34,7 @@ public sealed class ReceptionController : ControllerBase {
 
     [HttpGet("{id}")]
     public ReceptionViewModel Get(int id) {
-        var reception = _receptionService.Get(id);   
+        var reception = _receptionService.Get(id);
         return GetReceptionViewModel(reception);
     }
 
@@ -62,6 +62,7 @@ public sealed class ReceptionController : ControllerBase {
     }
 
     private IEnumerable<ReceptionDetailViewModel> GetReceptionDetailViewModel(IEnumerable<ReceptionDetail> receptionDetails) {
-        return receptionDetails.Select(x => x.ToViewModel(_productService.Get(x.ProductId)));
+        var products = _productService.Get(receptionDetails.Select(x => x.ProductId).ToArray());
+        return receptionDetails.Select(x => x.ToViewModel(products.First(p => p.Id == x.ProductId)));
     }
 }

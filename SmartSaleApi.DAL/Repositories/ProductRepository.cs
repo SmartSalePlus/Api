@@ -49,6 +49,14 @@ public sealed class ProductRepository : IProductRepository {
             .ToModel();
     }
 
+    public IEnumerable<Product> Get(params int[] ids) {
+        return _context.Products
+            .AsNoTracking()
+            .Where(x => ids.Contains(x.Id))
+            .OrderBy(x => x.Name)
+            .ToModel();
+    }
+
     public void Update(Product product) {
         _context.Products
             .Where(x => x.Id == product.Id)

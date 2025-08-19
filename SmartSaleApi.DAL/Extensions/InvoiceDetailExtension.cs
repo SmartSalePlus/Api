@@ -16,7 +16,7 @@ internal static class InvoiceDetailExtension {
         );
     }
     public static IEnumerable<Core::InvoiceDetail> ToModel(this IEnumerable<DAL::InvoiceDetail> src)
-        => src.Select(x => x.ToModel());
+        => src.Select(x => x.ToModel()).ToList();
 
     public static DAL::InvoiceDetail ToEntity(this Core::InvoiceDetail src)
         => new() {

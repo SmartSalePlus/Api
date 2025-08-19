@@ -16,7 +16,7 @@ internal static class ReceptionDetailExtension {
     }
 
     public static IEnumerable<Core::ReceptionDetail> ToModel(this IEnumerable<DAL::ReceptionDetail> src)
-        => src.Select(x => x.ToModel());
+        => src.Select(x => x.ToModel()).ToList();
 
     public static DAL::ReceptionDetail ToEntity(this Core::ReceptionDetail src)
         => new() {

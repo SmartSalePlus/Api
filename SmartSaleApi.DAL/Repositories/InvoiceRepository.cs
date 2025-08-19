@@ -35,7 +35,7 @@ public sealed class InvoiceRepository : IInvoiceRepository {
 
         ArgumentNullException.ThrowIfNull(invoice);
 
-        return invoice.ToModel();
+        return invoice.OrderInvoiceDetailsByProductName().ToModel();
     }
 
     public IEnumerable<Invoice> Get() {
@@ -44,6 +44,7 @@ public sealed class InvoiceRepository : IInvoiceRepository {
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
             .ThenInclude(x => x.Product)
+            .Select(x => x.OrderInvoiceDetailsByProductName())
             .ToModel();
     }
 
@@ -53,6 +54,7 @@ public sealed class InvoiceRepository : IInvoiceRepository {
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails)
             .ThenInclude(x => x.Product)
+            .Select(x => x.OrderInvoiceDetailsByProductName())
             .Where(x => x.Date >= parameter.DateBegin && x.Date <= parameter.DateEnd
                 && x.IsPaid == parameter.IsPaid
                 && (parameter.BuyerId == null || x.BuyerId == parameter.BuyerId))

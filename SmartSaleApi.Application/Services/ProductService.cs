@@ -2,7 +2,7 @@
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
-namespace SmartSaleApi.Core.Services;
+namespace SmartSaleApi.Application.Services;
 
 public sealed class ProductService : IProductService {
     private readonly IProductRepository _repository;
@@ -29,6 +29,10 @@ public sealed class ProductService : IProductService {
 
     public IEnumerable<Product> Get() {
         return _repository.Get();
+    }
+
+    public IEnumerable<Product> Get(params int[] ids) {
+        return _repository.Get(ids);
     }
 
     public void Update(Product product) {

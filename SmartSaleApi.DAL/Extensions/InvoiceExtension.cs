@@ -21,7 +21,7 @@ internal static class InvoiceExtension {
     }
 
     public static IEnumerable<Core::Invoice> ToModel(this IEnumerable<DAL::Invoice> src)
-        => src.Select(x => x.ToModel());
+        => src.Select(x => x.ToModel()).ToList();
 
     public static DAL::Invoice ToEntity(this Core::Invoice src)
         => new() {
@@ -34,4 +34,18 @@ internal static class InvoiceExtension {
             BuyerId = src.BuyerId,
             InvoiceDetails = src.InvoiceDetails.ToEntity()
         };
+
+    public static DAL::Invoice OrderInvoiceDetailsByProductName(this DAL::Invoice invoice) {
+        invoice.InvoiceDetails = invoice.InvoiceDetails
+            .Select(invoiceDetail => {
+                var product = invoiceDetail.Product;
+                ArgumentNullException.ThrowIfNull(product);
+                return (InvoiceDetail: invoiceDetail, Product: product);
+            })
+            .OrderBy(x => x.Product.Name)
+            .Select(x => x.InvoiceDetail)
+            .ToList();
+
+        return invoice;
+    }
 }

@@ -7,47 +7,47 @@ namespace SmartSaleApi.Controllers;
 [ApiController]
 [Route("api/[controller]/[action]")]
 public sealed class ProductController : ControllerBase {
-    private readonly IProductService _service;
+    private readonly IProductService _productService;
     private readonly IProductReportService _reportService;
 
-    public ProductController(IProductService service, IProductReportService reportService) {
-        _service = service;
+    public ProductController(IProductService productService, IProductReportService reportService) {
+        _productService = productService;
         _reportService = reportService;
     }
 
     [HttpPost]
     public void Add([FromBody] Product product) {
-        _service.Add(product);
+        _productService.Add(product);
     }
 
     [HttpPut]
     public void Update([FromBody] Product product) {
-        _service.Update(product);
+        _productService.Update(product);
     }
 
     [HttpDelete("{id}")]
     public void Delete(int id) {
-        _service.Delete(id);
+        _productService.Delete(id);
     }
 
     [HttpGet("{id}")]
     public Product Get(int id) {
-        return _service.Get(id);
+        return _productService.Get(id);
     }
 
     [HttpGet("name/{name}")]
     public IEnumerable<Product> Get(string name) {
-        return _service.Get(name);
+        return _productService.Get(name);
     }
 
     [HttpGet]
     public IEnumerable<Product> Get() {
-        return _service.Get();
+        return _productService.Get();
     }
 
     [HttpGet]
     public FileStreamResult GetFile() {
         var (name, memoryStream) = _reportService.GetMemoryStream();
-        return File(memoryStream, "application/unknown", name);
+        return File(memoryStream, "application/pdf", name);
     }
 }

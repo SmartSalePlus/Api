@@ -6,34 +6,48 @@ namespace SmartSaleApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public sealed class BuyerController(IBuyerService service) : ControllerBase {
+public sealed class BuyerController : ControllerBase {
+    private readonly IBuyerService _buyerService;
+    private readonly IBuyerReportService _reportService;
+
+    public BuyerController(IBuyerService buyerService, IBuyerReportService reportService) {
+        _buyerService = buyerService;
+        _reportService = reportService;
+    }
+
     [HttpPost]
     public void Add([FromBody] Buyer buyer) {
-        service.Add(buyer);
+        _buyerService.Add(buyer);
     }
 
     [HttpPut]
     public void Update([FromBody] Buyer buyer) {
-        service.Update(buyer);
+        _buyerService.Update(buyer);
     }
 
     [HttpDelete("{id}")]
     public void Delete(int id) {
-        service.Delete(id);
+        _buyerService.Delete(id);
     }
 
     [HttpGet("{id}")]
     public Buyer Get(int id) {
-        return service.Get(id);
+        return _buyerService.Get(id);
     }
 
     [HttpGet("name/{name}")]
     public IEnumerable<Buyer> Get(string name) {
-        return service.Get(name);
+        return _buyerService.Get(name);
     }
 
     [HttpGet]
     public IEnumerable<Buyer> Get() {
-        return service.Get();
+        return _buyerService.Get();
+    }
+
+    [HttpGet]
+    public FileStreamResult GetFile(int buyerId) {
+        var (name, memoryStream) = _reportService.GetMemoryStream(buyerId);
+        return File(memoryStream, "application/pdf", name);
     }
 }

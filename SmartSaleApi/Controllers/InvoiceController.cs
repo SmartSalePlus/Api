@@ -67,7 +67,7 @@ public sealed class InvoiceController : ControllerBase {
     [HttpGet]
     public FileStreamResult GetFile(int invoiceId) {
         var (name, memoryStream) = _reportService.GetMemoryStream(invoiceId);
-        return File(memoryStream, "application/unknown", name);
+        return File(memoryStream, "application/pdf", name);
     }
 
     private InvoiceViewModel GetInvoiceViewModel(Invoice invoice) {

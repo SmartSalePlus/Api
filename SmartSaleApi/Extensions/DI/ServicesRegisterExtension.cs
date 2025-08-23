@@ -11,6 +11,7 @@ internal static class ServicesRegisterExtension {
         services.AddScoped<IReceptionService, ReceptionService>();
         services.AddScoped<IInvoiceReportService, InvoicePdfService>();
         services.AddScoped<IProductReportService, ProductPdfService>();
+        services.AddScoped<IBuyerReportService, BuyerPdfService>();
 
         return services;
     }

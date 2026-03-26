@@ -56,7 +56,7 @@ public sealed class InvoiceRepository : IInvoiceRepository {
             .ThenInclude(x => x.Product)
             .Where(x => x.Date >= parameter.DateBegin && x.Date <= parameter.DateEnd
                 && x.IsPaid == parameter.IsPaid
-                && (parameter.BuyerId == null || x.BuyerId == parameter.BuyerId))
+                && (parameter.BuyerId == 0 || x.BuyerId == parameter.BuyerId))
             .Select(x => x.OrderInvoiceDetailsByProductName())
             .ToModel();
     }

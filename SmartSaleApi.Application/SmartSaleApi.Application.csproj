@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -12,8 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="itext" Version="9.2.0" />
-    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.2.0" />
+    <PackageReference Include="itext" Version="9.3.0" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
   </ItemGroup>
 
   <ItemGroup>

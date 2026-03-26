@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
@@ -6,6 +7,7 @@ namespace SmartSaleApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
+//[Authorize]
 public sealed class BuyerController : ControllerBase {
     private readonly IBuyerService _buyerService;
     private readonly IBuyerReportService _reportService;

@@ -11,6 +11,7 @@ public sealed class SmartSaleDbContext(DbContextOptions<SmartSaleDbContext> opti
     internal DbSet<Product> Products { get; set; }
     internal DbSet<Reception> Receptions { get; set; }
     internal DbSet<ReceptionDetail> ReceptionDetails { get; set; }
+    internal DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.ApplyConfiguration(new BuyerConfiguration());
@@ -19,6 +20,7 @@ public sealed class SmartSaleDbContext(DbContextOptions<SmartSaleDbContext> opti
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new ReceptionConfiguration());
         modelBuilder.ApplyConfiguration(new ReceptionDetailConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

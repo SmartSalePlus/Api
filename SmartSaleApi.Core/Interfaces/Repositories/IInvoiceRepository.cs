@@ -1,4 +1,4 @@
-﻿using SmartSaleApi.Core.InputParameters;
+using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Models;
 
 namespace SmartSaleApi.Core.Interfaces.Repositories;

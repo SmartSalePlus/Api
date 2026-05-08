@@ -1,4 +1,4 @@
-п»їusing SmartSaleApi.Core.InputParameters;
+using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
@@ -17,17 +17,8 @@ public sealed class InvoiceService : IInvoiceService {
     }
 
     public void Add(Invoice invoice) {
-        var details = invoice.InvoiceDetails.ToList();
-        ValidateInvoiceDetails(details);
-
-        var grouped = details
-            .GroupBy(d => d.ProductId)
-            .Select(g => (ProductId: g.Key, Count: g.Sum(x => x.Count)))
-            .ToList();
-
-        var products = _productService.Get(grouped.Select(x => x.ProductId).ToArray())
-            .ToDictionary(p => p.Id);
-
+        var grouped = GetGroupedInvoiceDetails(invoice.InvoiceDetails);
+        var products = GetProductsMap(grouped);
         ValidateStock(grouped, products);
 
         _repository.Add(invoice);
@@ -42,7 +33,21 @@ public sealed class InvoiceService : IInvoiceService {
     }
 
     public void Delete(int id) {
+        var invoice = _repository.Get(id);
+        var grouped = GetGroupedInvoiceDetails(invoice.InvoiceDetails);
+        var products = GetProductsMap(grouped);
+
+        foreach (var item in grouped) {
+            if (!products.TryGetValue(item.ProductId, out var product)) {
+                throw new InvalidOperationException($"Товар {item.ProductId} не найден");
+            }
+
+            product.Count += item.Count;
+            _productService.Update(product);
+        }
+
         _repository.Delete(id);
+        _unitOfWork.SaveChanges();
     }
 
     public Invoice Get(int id) {
@@ -57,28 +62,39 @@ public sealed class InvoiceService : IInvoiceService {
         return _repository.Get(parameter);
     }
 
-    public void Update(Invoice invoice) {
-        _repository.Update(invoice);
-    }
-
     public static void ValidateInvoiceDetails(IReadOnlyCollection<InvoiceDetail> invoiceDetails) {
         if (invoiceDetails.Count == 0) {
-            throw new ArgumentException("РќР°РєР»Р°РґРЅР°СЏ РЅРµ СЃРѕРґРµСЂР¶РёС‚ С‚РѕРІР°СЂРѕРІ");
+            throw new ArgumentException("Накладная не содержит товаров");
         }
 
         if (invoiceDetails.Any(x => x.Count <= 0)) {
-            throw new ArgumentException($"РќРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ, Р·РЅР°С‡РµРЅРёРµ <= 0");
+            throw new ArgumentException("Некорректное количество, значение <= 0");
         }
+    }
+
+    private IReadOnlyDictionary<int, Product> GetProductsMap(IEnumerable<(int ProductId, int Count)> grouped) {
+        return _productService.Get(grouped.Select(x => x.ProductId).ToArray())
+            .ToDictionary(p => p.Id);
+    }
+
+    private static List<(int ProductId, int Count)> GetGroupedInvoiceDetails(IEnumerable<InvoiceDetail> detailsSource) {
+        var details = detailsSource.ToList();
+        ValidateInvoiceDetails(details);
+
+        return details
+            .GroupBy(d => d.ProductId)
+            .Select(g => (ProductId: g.Key, Count: g.Sum(x => x.Count)))
+            .ToList();
     }
 
     private static void ValidateStock(IEnumerable<(int ProductId, int Count)> grouped, IReadOnlyDictionary<int, Product> products) {
         foreach (var item in grouped) {
             if (!products.TryGetValue(item.ProductId, out var product)) {
-                throw new InvalidOperationException($"РўРѕРІР°СЂ {item.ProductId} РЅРµ РЅР°Р№РґРµРЅ");
+                throw new InvalidOperationException($"Товар {item.ProductId} не найден");
             }
 
             if (product.Count < item.Count) {
-                throw new InvalidOperationException($"РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РѕСЃС‚Р°С‚РєР° РїРѕ С‚РѕРІР°СЂСѓ {product.Name}: РЅСѓР¶РЅРѕ {item.Count}, РґРѕСЃС‚СѓРїРЅРѕ {product.Count}");
+                throw new InvalidOperationException($"Недостаточно остатка по товару {product.Name}: нужно {item.Count}, доступно {product.Count}");
             }
         }
     }

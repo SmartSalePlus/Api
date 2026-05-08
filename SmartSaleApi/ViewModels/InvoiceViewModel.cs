@@ -1,4 +1,5 @@
-﻿using SmartSaleApi.Core.Models;
+using SmartSaleApi.Core.Enums;
+using SmartSaleApi.Core.Models;
 
 namespace SmartSaleApi.ViewModels;
 
@@ -8,7 +9,9 @@ public sealed record InvoiceViewModel(
     int Total,
     int Discount,
     int TotalWithDiscount,
-    bool IsPaid,
+    int PaidAmount,
+    int RemainingAmount,
+    PaymentStatus PaymentStatus,
     Buyer Buyer,
     IEnumerable<InvoiceDetailViewModel> InvoiceDetailViewModels
 );

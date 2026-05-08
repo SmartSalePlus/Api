@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
@@ -30,11 +30,6 @@ public sealed class InvoiceController : ControllerBase {
     [HttpPost]
     public void Add([FromBody] Invoice invoice) {
         _invoiceService.Add(invoice);
-    }
-
-    [HttpPut]
-    public void Update([FromBody] Invoice invoice) {
-        _invoiceService.Update(invoice);
     }
 
     [HttpDelete("{id}")]

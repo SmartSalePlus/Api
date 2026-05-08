@@ -1,4 +1,4 @@
-﻿using SmartSaleApi.Core.Models;
+using SmartSaleApi.Core.Models;
 using SmartSaleApi.ViewModels;
 
 namespace SmartSaleApi.Extensions.Mapping;
@@ -11,7 +11,9 @@ public static class InvoiceExtension {
             invoice.Total,
             invoice.Discount,
             invoice.TotalWithDiscount,
-            invoice.IsPaid,
+            invoice.PaidAmount,
+            invoice.TotalWithDiscount - invoice.PaidAmount,
+            invoice.PaymentStatus,
             buyer,
             invoiceDetailViewModels
         );

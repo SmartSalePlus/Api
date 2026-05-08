@@ -1,7 +1,8 @@
-Ôªøusing iText.Layout.Element;
+using iText.Layout.Element;
 using iText.Layout.Properties;
 using SmartSaleApi.Application.Extensions;
 using SmartSaleApi.Application.Factories;
+using SmartSaleApi.Core.Enums;
 using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Interfaces.Services;
 
@@ -18,8 +19,9 @@ public sealed class BuyerPdfService : IBuyerReportService {
 
     public (string Name, MemoryStream MemoryStream) GetMemoryStream(int buyerId) {
         var buyer = _buyerService.Get(buyerId);
-        var parameter = new InvoiceInputParameter(DateOnly.MinValue, DateOnly.MaxValue, buyerId, false);
-        var invoices = _invoiceService.Get(parameter);
+        var parameter = new InvoiceInputParameter(DateOnly.MinValue, DateOnly.MaxValue, buyerId, null);
+        var invoices = _invoiceService.Get(parameter)
+            .Where(x => x.PaymentStatus != PaymentStatus.Paid);
 
         var date = DateTime.Now.ToString("dd.MM.yyyy");
         var name = $"{buyer.Name}_{date}.pdf";
@@ -27,8 +29,8 @@ public sealed class BuyerPdfService : IBuyerReportService {
         var memoryStream = new MemoryStream();
         var document = DocumentFactory.Create(memoryStream);
 
-        document.Add(new Paragraph($"–î–∞—Ç–∞: {date}"));
-        document.Add(new Paragraph($"{buyer.Name} –¥–æ–ª–≥–∏")
+        document.Add(new Paragraph($"ƒ‡Ú‡: {date}"));
+        document.Add(new Paragraph($"{buyer.Name} ‰ÓÎ„Ë")
             .SetFontSize(14)
             .SetFont(PdfFontCustom.TimesNewRomanBold)
             .SetTextAlignment(TextAlignment.CENTER));

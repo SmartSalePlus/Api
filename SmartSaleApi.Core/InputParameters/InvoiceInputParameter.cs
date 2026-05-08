@@ -1,8 +1,10 @@
-﻿namespace SmartSaleApi.Core.InputParameters;
+namespace SmartSaleApi.Core.InputParameters;
+
+using SmartSaleApi.Core.Enums;
 
 public sealed record InvoiceInputParameter(
     DateOnly DateBegin,
     DateOnly DateEnd,
     int BuyerId,
-    bool IsPaid
+    PaymentStatus? PaymentStatus
 );

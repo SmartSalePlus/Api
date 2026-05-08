@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using SmartSaleApi.Core.Enums;
 using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Models;
@@ -18,18 +19,21 @@ public sealed class InvoiceRepository : IInvoiceRepository {
     }
 
     public void Delete(int id) {
-        _context.Invoices
-            .Where(x => x.Id == id)
-            .ExecuteDelete();
+        var invoice = _context.Invoices.FirstOrDefault(x => x.Id == id);
+        ArgumentNullException.ThrowIfNull(invoice);
+        invoice.EntityStatus = EntityStatus.Archived;
+    }
+
+    public void Update(Invoice invoice) {
+        var existingInvoice = _context.Invoices.FirstOrDefault(x => x.Id == invoice.Id);
+        ArgumentNullException.ThrowIfNull(existingInvoice);
+
+        existingInvoice.PaidAmount = invoice.PaidAmount;
+        existingInvoice.PaymentStatus = invoice.PaymentStatus;
     }
 
     public Invoice Get(int id) {
-        var invoice = _context.Invoices
-            .AsNoTracking()
-            .Include(x => x.Buyer)
-            .Include(x => x.InvoiceDetails.OrderBy(d => d.Product.Name))
-            .ThenInclude(x => x.Product)
-            .Include(x => x.InvoicePayments.OrderBy(p => p.Date))
+        var invoice = BuildBaseQuery()
             .FirstOrDefault(x => x.Id == id);
 
         ArgumentNullException.ThrowIfNull(invoice);
@@ -38,29 +42,29 @@ public sealed class InvoiceRepository : IInvoiceRepository {
     }
 
     public IEnumerable<Invoice> Get() {
-        return _context.Invoices
-            .AsNoTracking()
-            .Include(x => x.Buyer)
-            .Include(x => x.InvoiceDetails.OrderBy(d => d.Product.Name))
-            .ThenInclude(x => x.Product);
+        return BuildBaseQuery();
     }
 
     public IEnumerable<Invoice> Get(InvoiceInputParameter parameter) {
+        var query = BuildBaseQuery()
+            .Where(x => x.Date >= parameter.DateBegin
+                && x.Date <= parameter.DateEnd
+                && (parameter.BuyerId == 0 || x.BuyerId == parameter.BuyerId));
+
+        if (parameter.PaymentStatus.HasValue) {
+            query = query.Where(x => x.PaymentStatus == parameter.PaymentStatus.Value);
+        }
+
+        return query;
+    }
+
+    private IQueryable<Invoice> BuildBaseQuery() {
         return _context.Invoices
             .AsNoTracking()
+            .Where(x => x.EntityStatus == EntityStatus.Active)
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails.OrderBy(d => d.Product.Name))
             .ThenInclude(x => x.Product)
-            .Where(x => x.Date >= parameter.DateBegin && x.Date <= parameter.DateEnd
-                && x.IsPaid == parameter.IsPaid
-                && (parameter.BuyerId == 0 || x.BuyerId == parameter.BuyerId));
-    }
-
-    public void Update(Invoice invoice) {
-        _context.Invoices
-            .Where(x => x.Id == invoice.Id)
-            .ExecuteUpdate(u => u
-                .SetProperty(p => p.IsPaid, invoice.IsPaid)
-            );
+            .Include(x => x.InvoicePayments.OrderBy(p => p.Date));
     }
 }

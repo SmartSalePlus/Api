@@ -2,7 +2,6 @@
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Models;
 using SmartSaleApi.DAL.Contexts;
-using SmartSaleApi.DAL.Extensions;
 
 namespace SmartSaleApi.DAL.Repositories;
 
@@ -14,7 +13,7 @@ public sealed class ReceptionRepository : IReceptionRepository {
     }
 
     public void Add(Reception reception) {
-        _context.Receptions.Add(reception.ToEntity());
+        _context.Receptions.Add(reception);
         _context.SaveChanges();
     }
 
@@ -33,15 +32,14 @@ public sealed class ReceptionRepository : IReceptionRepository {
 
         ArgumentNullException.ThrowIfNull(reception);
 
-        return reception.ToModel();
+        return reception;
     }
 
     public IEnumerable<Reception> Get() {
         return _context.Receptions
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
-            .ThenInclude(x => x.Product)
-            .ToModel();
+            .ThenInclude(x => x.Product);
     }
 
     public IEnumerable<Reception> Get(DateOnly date) {
@@ -49,8 +47,7 @@ public sealed class ReceptionRepository : IReceptionRepository {
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
             .ThenInclude(x => x.Product)
-            .Where(x => x.Date == date)
-            .ToModel();
+            .Where(x => x.Date == date);
     }
 
     public IEnumerable<Reception> GetByProduct(int productId) {
@@ -58,8 +55,7 @@ public sealed class ReceptionRepository : IReceptionRepository {
             .AsNoTracking()
             .Include(x => x.ReceptionDetails)
             .ThenInclude(x => x.Product)
-            .Where(x => x.ReceptionDetails.Any(r => r.ProductId == productId))
-            .ToModel();
+            .Where(x => x.ReceptionDetails.Any(r => r.ProductId == productId));
     }
 
     public void Update(Reception reception) {

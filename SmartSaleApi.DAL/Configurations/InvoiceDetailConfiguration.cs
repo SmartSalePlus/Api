@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SmartSaleApi.DAL.Entities;
+using SmartSaleApi.Core.Models;
 
 namespace SmartSaleApi.DAL.Configurations;
 

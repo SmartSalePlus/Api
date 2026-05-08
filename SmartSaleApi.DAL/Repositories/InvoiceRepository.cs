@@ -3,7 +3,6 @@ using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Models;
 using SmartSaleApi.DAL.Contexts;
-using SmartSaleApi.DAL.Extensions;
 
 namespace SmartSaleApi.DAL.Repositories;
 
@@ -15,8 +14,7 @@ public sealed class InvoiceRepository : IInvoiceRepository {
     }
 
     public void Add(Invoice invoice) {
-        _context.Invoices.Add(invoice.ToEntity());
-        _context.SaveChanges();
+        _context.Invoices.Add(invoice);
     }
 
     public void Delete(int id) {
@@ -29,46 +27,39 @@ public sealed class InvoiceRepository : IInvoiceRepository {
         var invoice = _context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
-            .Include(x => x.InvoiceDetails)
+            .Include(x => x.InvoiceDetails.OrderBy(d => d.Product.Name))
             .ThenInclude(x => x.Product)
+            .Include(x => x.InvoicePayments.OrderBy(p => p.Date))
             .FirstOrDefault(x => x.Id == id);
 
         ArgumentNullException.ThrowIfNull(invoice);
 
-        return invoice.OrderInvoiceDetailsByProductName().ToModel();
+        return invoice;
     }
 
     public IEnumerable<Invoice> Get() {
         return _context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
-            .Include(x => x.InvoiceDetails)
-            .ThenInclude(x => x.Product)
-            .Select(x => x.OrderInvoiceDetailsByProductName())
-            .ToModel();
+            .Include(x => x.InvoiceDetails.OrderBy(d => d.Product.Name))
+            .ThenInclude(x => x.Product);
     }
 
     public IEnumerable<Invoice> Get(InvoiceInputParameter parameter) {
         return _context.Invoices
             .AsNoTracking()
             .Include(x => x.Buyer)
-            .Include(x => x.InvoiceDetails)
+            .Include(x => x.InvoiceDetails.OrderBy(d => d.Product.Name))
             .ThenInclude(x => x.Product)
             .Where(x => x.Date >= parameter.DateBegin && x.Date <= parameter.DateEnd
                 && x.IsPaid == parameter.IsPaid
-                && (parameter.BuyerId == 0 || x.BuyerId == parameter.BuyerId))
-            .Select(x => x.OrderInvoiceDetailsByProductName())
-            .ToModel();
+                && (parameter.BuyerId == 0 || x.BuyerId == parameter.BuyerId));
     }
 
     public void Update(Invoice invoice) {
         _context.Invoices
             .Where(x => x.Id == invoice.Id)
             .ExecuteUpdate(u => u
-                .SetProperty(p => p.Date, invoice.Date)
-                .SetProperty(p => p.Total, invoice.Total)
-                .SetProperty(p => p.Discount, invoice.Discount)
-                .SetProperty(p => p.TotalWithDiscount, invoice.TotalWithDiscount)
                 .SetProperty(p => p.IsPaid, invoice.IsPaid)
             );
     }

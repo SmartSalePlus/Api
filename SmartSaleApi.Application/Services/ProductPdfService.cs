@@ -57,6 +57,6 @@ public sealed class ProductPdfService : IProductReportService {
     }
 
     private string GetProductName(Product product) {
-        return product.CountInPackage > 1 ? $"{product.Name} ({product.CountInPackage})" : product.Name;
+        return product.InPackage > 1 ? $"{product.Name} ({product.InPackage})" : product.Name;
     }
 }

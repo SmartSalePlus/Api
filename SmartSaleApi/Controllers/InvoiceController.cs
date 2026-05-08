@@ -3,7 +3,7 @@ using SmartSaleApi.Core.InputParameters;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 using SmartSaleApi.Extensions.Mapping;
-using SmartSaleApi.ViewModel;
+using SmartSaleApi.ViewModels;
 
 namespace SmartSaleApi.Controllers;
 

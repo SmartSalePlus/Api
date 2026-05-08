@@ -1,7 +1,5 @@
-﻿using Core = SmartSaleApi.Core.Models;
-using DAL = SmartSaleApi.DAL.Entities;
+﻿using SmartSaleApi.Core.Models;
 using SmartSaleApi.DAL.Contexts;
-using SmartSaleApi.DAL.Extensions;
 using Microsoft.EntityFrameworkCore;
 using SmartSaleApi.Core.Interfaces.Repositories;
 
@@ -14,13 +12,13 @@ public sealed class UserRepository : IUserRepository {
         _context = context;
     }
 
-    public Core::User Get(string login) {
-        var user = _context.Set<DAL::User>()
+    public User Get(string login) {
+        var user = _context.Set<User>()
             .AsNoTracking()
             .FirstOrDefault(x => x.Login == login);
 
         ArgumentNullException.ThrowIfNull(user);
 
-        return user.ToModel();
+        return user;
     }
 }

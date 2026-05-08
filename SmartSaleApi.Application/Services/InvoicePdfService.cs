@@ -57,7 +57,7 @@ public sealed class InvoicePdfService : IInvoiceReportService {
         int number = 1;
         foreach (var invoiceDetail in invoice.InvoiceDetails) {
             var product = products.First(x => x.Id == invoiceDetail.ProductId);
-            string count = product.CountInPackage > 1 ? $"{invoiceDetail.Count}/{product.CountInPackage}" : invoiceDetail.Count.ToString();
+            string count = product.InPackage > 1 ? $"{invoiceDetail.Count}/{product.InPackage}" : invoiceDetail.Count.ToString();
 
             table.AddCell(number.ToString());
             table.AddCell(product.Name.ToString());

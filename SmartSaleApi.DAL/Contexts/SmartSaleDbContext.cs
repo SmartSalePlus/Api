@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartSaleApi.DAL.Configurations;
-using SmartSaleApi.DAL.Entities;
+using SmartSaleApi.Core.Models;
 
 namespace SmartSaleApi.DAL.Contexts;
 
@@ -8,6 +8,7 @@ public sealed class SmartSaleDbContext(DbContextOptions<SmartSaleDbContext> opti
     internal DbSet<Buyer> Buyers { get; set; }
     internal DbSet<Invoice> Invoices { get; set; }
     internal DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+    internal DbSet<InvoicePayment> InvoicePayments { get; set; }
     internal DbSet<Product> Products { get; set; }
     internal DbSet<Reception> Receptions { get; set; }
     internal DbSet<ReceptionDetail> ReceptionDetails { get; set; }

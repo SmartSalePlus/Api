@@ -2,7 +2,6 @@
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Models;
 using SmartSaleApi.DAL.Contexts;
-using SmartSaleApi.DAL.Extensions;
 
 namespace SmartSaleApi.DAL.Repositories;
 
@@ -14,7 +13,7 @@ public sealed class BuyerRepository : IBuyerRepository {
     }
 
     public void Add(Buyer buyer) {
-        _context.Buyers.Add(buyer.ToEntity());
+        _context.Buyers.Add(buyer);
         _context.SaveChanges();
     }
 
@@ -31,22 +30,20 @@ public sealed class BuyerRepository : IBuyerRepository {
 
         ArgumentNullException.ThrowIfNull(buyer);
 
-        return buyer.ToModel();
+        return buyer;
     }
 
     public IEnumerable<Buyer> Get(string name) {
         return _context.Buyers
             .AsNoTracking()
             .Where(x => x.Name.ToLower().Contains(name.ToLower()))
-            .OrderBy(x => x.Name)
-            .ToModel();
+            .OrderBy(x => x.Name);
     }
 
     public IEnumerable<Buyer> Get() {
         return _context.Buyers
             .AsNoTracking()
-            .OrderBy(x => x.Name)
-            .ToModel();
+            .OrderBy(x => x.Name);
     }
 
     public void Update(Buyer buyer) {

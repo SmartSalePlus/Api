@@ -1,12 +1,21 @@
-﻿namespace SmartSaleApi.Core.Models;
+﻿using SmartSaleApi.Core.Enums;
 
-public sealed record Invoice(
-    int Id,
-    DateOnly Date,
-    double Total,
-    double Discount,
-    double TotalWithDiscount,
-    bool IsPaid,
-    int BuyerId,
-    IEnumerable<InvoiceDetail> InvoiceDetails
-);
+namespace SmartSaleApi.Core.Models;
+
+public sealed class Invoice {
+    public int Id { get; set; }
+    public int BuyerId { get; set; }
+    public DateOnly Date { get; set; }
+
+    public int Total { get; set; }
+    public int Discount { get; set; }
+    public int TotalWithDiscount { get; set; }
+
+    public int PaidAmount { get; set; }
+    public EntityStatus EntityStatus { get; set; }
+    public PaymentStatus PaymentStatus { get; set; }
+
+    public required Buyer Buyer { get; set; }
+    public ICollection<InvoiceDetail> InvoiceDetails { get; set; } = [];
+    public ICollection<InvoicePayment> InvoicePayments { get; set; } = [];
+}

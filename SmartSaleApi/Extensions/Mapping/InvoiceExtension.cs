@@ -1,5 +1,5 @@
 ﻿using SmartSaleApi.Core.Models;
-using SmartSaleApi.ViewModel;
+using SmartSaleApi.ViewModels;
 
 namespace SmartSaleApi.Extensions.Mapping;
 

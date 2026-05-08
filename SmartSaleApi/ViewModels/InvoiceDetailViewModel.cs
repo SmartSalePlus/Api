@@ -1,10 +1,11 @@
 ﻿using SmartSaleApi.Core.Models;
 
-namespace SmartSaleApi.ViewModel;
+namespace SmartSaleApi.ViewModels;
 
 public sealed record InvoiceDetailViewModel(
     int Count,
+    int InPackage,
     double Price,
-    double Total,
+    int Total,
     Product Product
 );

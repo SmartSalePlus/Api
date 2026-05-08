@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartSaleApi.DAL.Contexts;
@@ -11,9 +12,11 @@ using SmartSaleApi.DAL.Contexts;
 namespace SmartSaleApi.DAL.Migrations
 {
     [DbContext(typeof(SmartSaleDbContext))]
-    partial class SmartSaleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260501164201_Rename")]
+    partial class Rename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace SmartSaleApi.DAL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Buyer", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Buyer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +44,7 @@ namespace SmartSaleApi.DAL.Migrations
                     b.ToTable("Buyers");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Invoice", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Invoice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +79,7 @@ namespace SmartSaleApi.DAL.Migrations
                     b.ToTable("Invoices");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.InvoiceDetail", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.InvoiceDetail", b =>
                 {
                     b.Property<int>("InvoiceId")
                         .HasColumnType("integer");
@@ -103,31 +106,7 @@ namespace SmartSaleApi.DAL.Migrations
                     b.ToTable("InvoiceDetails");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.InvoicePayment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int>("InvoiceId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.ToTable("InvoicePayments");
-                });
-
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Product", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -155,7 +134,7 @@ namespace SmartSaleApi.DAL.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Reception", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Reception", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,7 +152,7 @@ namespace SmartSaleApi.DAL.Migrations
                     b.ToTable("Receptions");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.ReceptionDetail", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.ReceptionDetail", b =>
                 {
                     b.Property<int>("ReceptionId")
                         .HasColumnType("integer");
@@ -194,7 +173,7 @@ namespace SmartSaleApi.DAL.Migrations
                     b.ToTable("ReceptionDetails");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.User", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -217,9 +196,9 @@ namespace SmartSaleApi.DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Invoice", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Invoice", b =>
                 {
-                    b.HasOne("SmartSaleApi.Core.Models.Buyer", "Buyer")
+                    b.HasOne("SmartSaleApi.DAL.Entities.Buyer", "Buyer")
                         .WithMany("Invoices")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -228,15 +207,15 @@ namespace SmartSaleApi.DAL.Migrations
                     b.Navigation("Buyer");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.InvoiceDetail", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.InvoiceDetail", b =>
                 {
-                    b.HasOne("SmartSaleApi.Core.Models.Invoice", "Invoice")
+                    b.HasOne("SmartSaleApi.DAL.Entities.Invoice", "Invoice")
                         .WithMany("InvoiceDetails")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartSaleApi.Core.Models.Product", "Product")
+                    b.HasOne("SmartSaleApi.DAL.Entities.Product", "Product")
                         .WithMany("InvoiceDetails")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -247,24 +226,15 @@ namespace SmartSaleApi.DAL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.InvoicePayment", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.ReceptionDetail", b =>
                 {
-                    b.HasOne("SmartSaleApi.Core.Models.Invoice", null)
-                        .WithMany("InvoicePayments")
-                        .HasForeignKey("InvoiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SmartSaleApi.Core.Models.ReceptionDetail", b =>
-                {
-                    b.HasOne("SmartSaleApi.Core.Models.Product", "Product")
+                    b.HasOne("SmartSaleApi.DAL.Entities.Product", "Product")
                         .WithMany("ReceptionDetails")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartSaleApi.Core.Models.Reception", "Reception")
+                    b.HasOne("SmartSaleApi.DAL.Entities.Reception", "Reception")
                         .WithMany("ReceptionDetails")
                         .HasForeignKey("ReceptionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -275,26 +245,24 @@ namespace SmartSaleApi.DAL.Migrations
                     b.Navigation("Reception");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Buyer", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Buyer", b =>
                 {
                     b.Navigation("Invoices");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Invoice", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Invoice", b =>
                 {
                     b.Navigation("InvoiceDetails");
-
-                    b.Navigation("InvoicePayments");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Product", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Product", b =>
                 {
                     b.Navigation("InvoiceDetails");
 
                     b.Navigation("ReceptionDetails");
                 });
 
-            modelBuilder.Entity("SmartSaleApi.Core.Models.Reception", b =>
+            modelBuilder.Entity("SmartSaleApi.DAL.Entities.Reception", b =>
                 {
                     b.Navigation("ReceptionDetails");
                 });

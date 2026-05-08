@@ -14,6 +14,7 @@ internal static class RepositoriesRegisterExtension {
     }
 
     public static IServiceCollection AddRepositories(this IServiceCollection services) {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBuyerRepository, BuyerRepository>();
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();

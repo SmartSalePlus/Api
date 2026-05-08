@@ -14,19 +14,19 @@ public sealed class ReceptionService : IReceptionService {
     }
 
     public void Add(Reception reception) {
-        if (reception.ReceptionDetails.Any(x => x.Count <= 0)) {
-            throw new ArgumentException($"Некорректное количество, значение <= 0");
-        }
+        //if (reception.ReceptionDetails.Any(x => x.Count <= 0)) {
+        //    throw new ArgumentException($"Некорректное количество, значение <= 0");
+        //}
 
-        _repository.Add(reception);
+        //_repository.Add(reception);
 
-        var products = _productService.Get(reception.ReceptionDetails.Select(x => x.ProductId).ToArray());
-        foreach (var receptionDetail in reception.ReceptionDetails) {
-            var product = products.First(x=>x.Id == receptionDetail.ProductId);
-            var updatedProduct = product with { Count = product.Count + receptionDetail.Count };
+        //var products = _productService.Get(reception.ReceptionDetails.Select(x => x.ProductId).ToArray());
+        //foreach (var receptionDetail in reception.ReceptionDetails) {
+        //    var product = products.First(x=>x.Id == receptionDetail.ProductId);
+        //    var updatedProduct = product with { Count = product.Count + receptionDetail.Count };
 
-            _productService.Update(updatedProduct);
-        }
+        //    _productService.Update(updatedProduct);
+        //}
     }
 
     public void Delete(int id) {

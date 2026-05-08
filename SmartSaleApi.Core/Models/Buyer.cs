@@ -1,6 +1,7 @@
 ﻿namespace SmartSaleApi.Core.Models;
 
-public sealed record Buyer(
-    int Id,
-    string Name
-);
+public sealed class Buyer {
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public ICollection<Invoice> Invoices { get; set; } = [];
+}

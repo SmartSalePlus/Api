@@ -1,4 +1,5 @@
-using SmartSaleApi.Core.InputParameters;
+using SmartSaleApi.Core.Enums;
+using SmartSaleApi.Core.Filters;
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
@@ -17,6 +18,15 @@ public sealed class InvoiceService : IInvoiceService {
     }
 
     public void Add(Invoice invoice) {
+        ValidatePayments(invoice.InvoicePayments);
+        invoice.PaidAmount = invoice.InvoicePayments.Sum(x => x.Amount);
+
+        CalculateInvoiceTotals(invoice);
+        ValidatePaidAmount(invoice.PaidAmount, invoice.TotalWithDiscount);
+
+        invoice.PaymentStatus = RecalculatePaymentStatus(invoice.TotalWithDiscount, invoice.PaidAmount);
+        invoice.EntityStatus = EntityStatus.Active;
+
         var grouped = GetGroupedInvoiceDetails(invoice.InvoiceDetails);
         var products = GetProductsMap(grouped);
         ValidateStock(grouped, products);
@@ -58,7 +68,7 @@ public sealed class InvoiceService : IInvoiceService {
         return _repository.Get();
     }
 
-    public IEnumerable<Invoice> Get(InvoiceInputParameter parameter) {
+    public IEnumerable<Invoice> Get(InvoiceFilter parameter) {
         return _repository.Get(parameter);
     }
 
@@ -69,6 +79,41 @@ public sealed class InvoiceService : IInvoiceService {
 
         if (invoiceDetails.Any(x => x.Count <= 0)) {
             throw new ArgumentException("Некорректное количество, значение <= 0");
+        }
+    }
+
+    private static void CalculateInvoiceTotals(Invoice invoice) {
+        foreach (var detail in invoice.InvoiceDetails) {
+            detail.Total = (int)Math.Round(detail.Count * detail.Price, MidpointRounding.AwayFromZero);
+        }
+
+        invoice.Total = invoice.InvoiceDetails.Sum(x => x.Total);
+        invoice.TotalWithDiscount = invoice.Total - invoice.Discount;
+    }
+
+    private static void ValidatePaidAmount(int paidAmount, int totalWithDiscount) {
+        if (paidAmount < 0) {
+            throw new InvalidOperationException("Сумма оплаты не может быть меньше 0");
+        }
+
+        if (paidAmount > totalWithDiscount) {
+            throw new InvalidOperationException($"Сумма оплаты превышает итоговую сумму накладной: {totalWithDiscount}");
+        }
+    }
+
+    private static PaymentStatus RecalculatePaymentStatus(int totalWithDiscount, int paidAmount) {
+        if (paidAmount <= 0) {
+            return PaymentStatus.Unpaid;
+        }
+
+        return paidAmount >= totalWithDiscount
+            ? PaymentStatus.Paid
+            : PaymentStatus.PartiallyPaid;
+    }
+
+    private static void ValidatePayments(IEnumerable<InvoicePayment> payments) {
+        if (payments.Any(x => x.Amount <= 0)) {
+            throw new InvalidOperationException("Сумма оплаты должна быть больше 0");
         }
     }
 

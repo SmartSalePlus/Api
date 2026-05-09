@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartSaleApi.Core.Interfaces.Services;
-using SmartSaleApi.Core.Models;
+using SmartSaleApi.Dtos.Buyers;
+using SmartSaleApi.Extensions.Mapping;
 
 namespace SmartSaleApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-//[Authorize]
 public sealed class BuyerController : ControllerBase {
     private readonly IBuyerService _buyerService;
     private readonly IBuyerReportService _reportService;
@@ -17,13 +17,13 @@ public sealed class BuyerController : ControllerBase {
     }
 
     [HttpPost]
-    public void Add([FromBody] Buyer buyer) {
-        _buyerService.Add(buyer);
+    public void Add([FromBody] BuyerSaveDto buyerDto) {
+        _buyerService.Add(buyerDto.ToModel());
     }
 
-    [HttpPut]
-    public void Update([FromBody] Buyer buyer) {
-        _buyerService.Update(buyer);
+    [HttpPut("{id}")]
+    public void Update(int id, [FromBody] BuyerSaveDto buyerDto) {
+        _buyerService.Update(buyerDto.ToModel(id));
     }
 
     [HttpDelete("{id}")]
@@ -32,18 +32,18 @@ public sealed class BuyerController : ControllerBase {
     }
 
     [HttpGet("{id}")]
-    public Buyer Get(int id) {
-        return _buyerService.Get(id);
+    public BuyerDto Get(int id) {
+        return _buyerService.Get(id).ToDto();
     }
 
     [HttpGet("name/{name}")]
-    public IEnumerable<Buyer> Get(string name) {
-        return _buyerService.Get(name);
+    public IEnumerable<BuyerDto> Get(string name) {
+        return _buyerService.Get(name).Select(x => x.ToDto());
     }
 
     [HttpGet]
-    public IEnumerable<Buyer> Get() {
-        return _buyerService.Get();
+    public IEnumerable<BuyerDto> Get() {
+        return _buyerService.Get().Select(x => x.ToDto());
     }
 
     [HttpGet]

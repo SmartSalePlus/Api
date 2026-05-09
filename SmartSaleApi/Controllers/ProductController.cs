@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartSaleApi.Core.Interfaces.Services;
-using SmartSaleApi.Core.Models;
+using SmartSaleApi.Dtos.Products;
+using SmartSaleApi.Extensions.Mapping;
 
 namespace SmartSaleApi.Controllers;
 
@@ -16,13 +17,13 @@ public sealed class ProductController : ControllerBase {
     }
 
     [HttpPost]
-    public void Add([FromBody] Product product) {
-        _productService.Add(product);
+    public void Add([FromBody] ProductSaveDto productDto) {
+        _productService.Add(productDto.ToModel());
     }
 
-    [HttpPut]
-    public void Update([FromBody] Product product) {
-        _productService.Update(product);
+    [HttpPut("{id}")]
+    public void Update(int id, [FromBody] ProductSaveDto productDto) {
+        _productService.Update(productDto.ToModel(id));
     }
 
     [HttpDelete("{id}")]
@@ -31,18 +32,18 @@ public sealed class ProductController : ControllerBase {
     }
 
     [HttpGet("{id}")]
-    public Product Get(int id) {
-        return _productService.Get(id);
+    public ProductDto Get(int id) {
+        return _productService.Get(id).ToDto();
     }
 
     [HttpGet("name/{name}")]
-    public IEnumerable<Product> Get(string name) {
-        return _productService.Get(name);
+    public IEnumerable<ProductDto> Get(string name) {
+        return _productService.Get(name).Select(x => x.ToDto());
     }
 
     [HttpGet]
-    public IEnumerable<Product> Get() {
-        return _productService.Get();
+    public IEnumerable<ProductDto> Get() {
+        return _productService.Get().Select(x => x.ToDto());
     }
 
     [HttpGet]

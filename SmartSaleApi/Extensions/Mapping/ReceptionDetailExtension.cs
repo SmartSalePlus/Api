@@ -1,13 +1,21 @@
-﻿using SmartSaleApi.Core.Models;
-using SmartSaleApi.ViewModels;
+using SmartSaleApi.Core.Models;
+using SmartSaleApi.Dtos.Receptions;
 
 namespace SmartSaleApi.Extensions.Mapping;
 
 public static class ReceptionDetailExtension {
-    public static ReceptionDetailViewModel ToViewModel(this ReceptionDetail receptionDetail, Product product)
+    public static ReceptionDetail ToModel(this ReceptionDetailSaveDto src)
+        => new() {
+            ProductId = src.ProductId,
+            Count = src.Count,
+            Price = src.Price
+        };
+
+    public static ReceptionDetailDto ToDto(this ReceptionDetail src)
         => new(
-            receptionDetail.Count,
-            receptionDetail.Price,
-            product
+            src.ProductId,
+            src.Product!.Name,
+            src.Count,
+            src.Price
         );
 }

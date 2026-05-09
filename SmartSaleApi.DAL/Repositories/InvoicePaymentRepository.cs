@@ -1,4 +1,4 @@
-using SmartSaleApi.Core.Interfaces.Repositories;
+﻿using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Models;
 using SmartSaleApi.DAL.Contexts;
 

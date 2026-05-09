@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SmartSaleApi.Core.Enums;
-using SmartSaleApi.Core.InputParameters;
+using SmartSaleApi.Core.Filters;
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Models;
 using SmartSaleApi.DAL.Contexts;
@@ -45,7 +45,7 @@ public sealed class InvoiceRepository : IInvoiceRepository {
         return BuildBaseQuery();
     }
 
-    public IEnumerable<Invoice> Get(InvoiceInputParameter parameter) {
+    public IEnumerable<Invoice> Get(InvoiceFilter parameter) {
         var query = BuildBaseQuery()
             .Where(x => x.Date >= parameter.DateBegin
                 && x.Date <= parameter.DateEnd
@@ -65,6 +65,8 @@ public sealed class InvoiceRepository : IInvoiceRepository {
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails.OrderBy(d => d.Product.Name))
             .ThenInclude(x => x.Product)
-            .Include(x => x.InvoicePayments.OrderBy(p => p.Date));
+            .Include(x => x.InvoicePayments.OrderBy(p => p.Date))
+            .OrderByDescending(x => x.Date)
+            .ThenByDescending(x => x.Buyer.Name);
     }
 }

@@ -15,7 +15,7 @@ public sealed class Invoice {
     public EntityStatus EntityStatus { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
 
-    public required Buyer Buyer { get; set; }
+    public Buyer? Buyer { get; set; }
     public ICollection<InvoiceDetail> InvoiceDetails { get; set; } = [];
     public ICollection<InvoicePayment> InvoicePayments { get; set; } = [];
 }

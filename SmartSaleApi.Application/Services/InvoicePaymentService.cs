@@ -1,4 +1,4 @@
-using SmartSaleApi.Core.Enums;
+п»їusing SmartSaleApi.Core.Enums;
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
@@ -63,14 +63,14 @@ public sealed class InvoicePaymentService : IInvoicePaymentService {
 
     private static void ValidatePaymentAmount(int amount) {
         if (amount <= 0) {
-            throw new InvalidOperationException("Сумма оплаты должна быть больше 0");
+            throw new InvalidOperationException("РЎСѓРјРјР° РѕРїР»Р°С‚С‹ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 0");
         }
     }
 
     private static void ValidatePaymentDoesNotExceedRemaining(Invoice invoice, int amount) {
         var remainingAmount = invoice.TotalWithDiscount - invoice.PaidAmount;
         if (amount > remainingAmount) {
-            throw new InvalidOperationException($"Сумма оплаты превышает остаток. Осталось: {remainingAmount}");
+            throw new InvalidOperationException($"РЎСѓРјРјР° РѕРїР»Р°С‚С‹ РїСЂРµРІС‹С€Р°РµС‚ РѕСЃС‚Р°С‚РѕРє. РћСЃС‚Р°Р»РѕСЃСЊ: {remainingAmount}");
         }
     }
 }

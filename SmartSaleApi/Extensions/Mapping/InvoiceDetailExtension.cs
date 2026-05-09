@@ -1,15 +1,24 @@
-﻿using SmartSaleApi.Core.Models;
-using SmartSaleApi.ViewModels;
+using SmartSaleApi.Core.Models;
+using SmartSaleApi.Dtos.Invoices;
 
 namespace SmartSaleApi.Extensions.Mapping;
 
 public static class InvoiceDetailExtension {
-    public static InvoiceDetailViewModel ToViewModel(this InvoiceDetail invoiceDetail, Product product)
+    public static InvoiceDetail ToModel(this InvoiceDetailSaveDto src)
+        => new() {
+            ProductId = src.ProductId,
+            Count = src.Count,
+            InPackage = src.InPackage,
+            Price = src.Price
+        };
+
+    public static InvoiceDetailDto ToDto(this InvoiceDetail src)
         => new(
-            invoiceDetail.Count,
-            invoiceDetail.InPackage,
-            invoiceDetail.Price,
-            invoiceDetail.Total,
-            product
+            src.ProductId,
+            src.Product!.Name,
+            src.Count,
+            src.InPackage,
+            src.Price,
+            src.Total
         );
 }

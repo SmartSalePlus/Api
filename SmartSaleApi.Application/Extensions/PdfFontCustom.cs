@@ -19,7 +19,7 @@ internal static class PdfFontCustom {
         string resourceName = $"SmartSaleApi.Application.Fonts.{name}.ttf";
         var assembly = Assembly.GetExecutingAssembly();
 
-        using var stream = assembly.GetManifestResourceStream(resourceName) 
+        using var stream = assembly.GetManifestResourceStream(resourceName)
             ?? throw new FileNotFoundException($"Шрифт {resourceName} не найден.");
 
         var bytes = new byte[stream.Length];

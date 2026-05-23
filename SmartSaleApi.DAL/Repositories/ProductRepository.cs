@@ -46,7 +46,7 @@ public sealed class ProductRepository : IProductRepository {
             .OrderBy(x => x.Name);
     }
 
-    public IEnumerable<Product> Get(params int[] ids) {
+    public IEnumerable<Product> Get(IEnumerable<int> ids) {
         return _context.Products
             .AsNoTracking()
             .Where(x => ids.Contains(x.Id))

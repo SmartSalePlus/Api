@@ -25,11 +25,19 @@ public sealed class InvoiceRepository : IInvoiceRepository {
     }
 
     public void Update(Invoice invoice) {
-        var existingInvoice = _context.Invoices.FirstOrDefault(x => x.Id == invoice.Id);
+        var existingInvoice = _context.Invoices
+            .Include(x => x.InvoiceDetails)
+            .Include(x => x.InvoicePayments)
+            .FirstOrDefault(x => x.Id == invoice.Id);
         ArgumentNullException.ThrowIfNull(existingInvoice);
 
+        existingInvoice.Total = invoice.Total;
+        existingInvoice.Discount = invoice.Discount;
+        existingInvoice.TotalWithDiscount = invoice.TotalWithDiscount;
         existingInvoice.PaidAmount = invoice.PaidAmount;
         existingInvoice.PaymentStatus = invoice.PaymentStatus;
+        existingInvoice.InvoiceDetails = invoice.InvoiceDetails;
+        existingInvoice.InvoicePayments = invoice.InvoicePayments;
     }
 
     public Invoice Get(int id) {

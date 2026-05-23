@@ -9,5 +9,8 @@ public interface IProductService {
     Product Get(int id);
     IEnumerable<Product> Get(string name);
     IEnumerable<Product> Get();
-    IEnumerable<Product> Get(params int[] ids);
+    IEnumerable<Product> Get(IEnumerable<int> ids);
+    void ReserveForInvoice(IEnumerable<InvoiceDetail> details);
+    void ReconcileInvoiceDetails(IEnumerable<InvoiceDetail> oldDetails, IEnumerable<InvoiceDetail> newDetails);
+    void ReturnForInvoice(IEnumerable<InvoiceDetail> details);
 }

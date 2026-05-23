@@ -26,6 +26,11 @@ public sealed class InvoiceController : ControllerBase {
         _invoiceService.Delete(id);
     }
 
+    [HttpPut("{id}")]
+    public void Update(int id, [FromBody] InvoiceSaveDto invoiceDto) {
+        _invoiceService.Update(invoiceDto.ToModel(id));
+    }
+
     [HttpGet("{id}")]
     public InvoiceDto Get(int id) {
         return _invoiceService.Get(id).ToDto();

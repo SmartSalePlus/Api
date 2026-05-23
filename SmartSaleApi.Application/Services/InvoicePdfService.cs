@@ -1,5 +1,4 @@
-﻿using iText.Layout;
-using iText.Layout.Element;
+﻿using iText.Layout.Element;
 using iText.Layout.Properties;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Application.Extensions;
@@ -21,7 +20,7 @@ public sealed class InvoicePdfService : IInvoiceReportService {
     public (string Name, MemoryStream MemoryStream) GetMemoryStream(int invoiceId) {
         var invoice = _invoiceService.Get(invoiceId);
         var buyer = _buyerService.Get(invoice.BuyerId);
-        var products = _productService.Get(invoice.InvoiceDetails.Select(x => x.ProductId).ToArray());
+        var products = _productService.Get(invoice.InvoiceDetails.Select(x => x.ProductId));
 
         var name = $"Накладная_{buyer.Name}_{invoice.Date}.pdf";
 

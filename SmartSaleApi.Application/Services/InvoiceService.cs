@@ -1,4 +1,4 @@
-using SmartSaleApi.Core.Enums;
+п»їusing SmartSaleApi.Core.Enums;
 using SmartSaleApi.Core.Filters;
 using SmartSaleApi.Core.Interfaces.Repositories;
 using SmartSaleApi.Core.Interfaces.Services;
@@ -8,54 +8,49 @@ namespace SmartSaleApi.Application.Services;
 
 public sealed class InvoiceService : IInvoiceService {
     private readonly IInvoiceRepository _repository;
+    private readonly IInvoiceDetailsService _invoiceDetailsService;
+    private readonly IInvoicePaymentsService _invoicePaymentsService;
     private readonly IProductService _productService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public InvoiceService(IInvoiceRepository repository, IProductService productService, IUnitOfWork unitOfWork) {
+    public InvoiceService(
+        IInvoiceRepository repository,
+        IInvoiceDetailsService invoiceDetailsService,
+        IInvoicePaymentsService invoicePaymentsService,
+        IProductService productService,
+        IUnitOfWork unitOfWork) {
         _repository = repository;
+        _invoiceDetailsService = invoiceDetailsService;
+        _invoicePaymentsService = invoicePaymentsService;
         _productService = productService;
         _unitOfWork = unitOfWork;
     }
 
     public void Add(Invoice invoice) {
-        ValidatePayments(invoice.InvoicePayments);
-        invoice.PaidAmount = invoice.InvoicePayments.Sum(x => x.Amount);
-
-        CalculateInvoiceTotals(invoice);
-        ValidatePaidAmount(invoice.PaidAmount, invoice.TotalWithDiscount);
-
-        invoice.PaymentStatus = RecalculatePaymentStatus(invoice.TotalWithDiscount, invoice.PaidAmount);
+        _invoiceDetailsService.CalculateTotals(invoice);
+        _invoicePaymentsService.Recalculate(invoice);
         invoice.EntityStatus = EntityStatus.Active;
 
-        var grouped = GetGroupedInvoiceDetails(invoice.InvoiceDetails);
-        var products = GetProductsMap(grouped);
-        ValidateStock(grouped, products);
-
+        _productService.ReserveForInvoice(invoice.InvoiceDetails);
         _repository.Add(invoice);
+        _unitOfWork.SaveChanges();
+    }
 
-        foreach (var item in grouped) {
-            var product = products[item.ProductId];
-            product.Count -= item.Count;
-            _productService.Update(product);
-        }
+    public void Update(Invoice invoice) {
+        var existingInvoice = _repository.Get(invoice.Id);
 
+        _invoiceDetailsService.CalculateTotals(invoice);
+        _invoicePaymentsService.Recalculate(invoice);
+
+        _productService.ReconcileInvoiceDetails(existingInvoice.InvoiceDetails, invoice.InvoiceDetails);
+        _repository.Update(invoice);
         _unitOfWork.SaveChanges();
     }
 
     public void Delete(int id) {
         var invoice = _repository.Get(id);
-        var grouped = GetGroupedInvoiceDetails(invoice.InvoiceDetails);
-        var products = GetProductsMap(grouped);
 
-        foreach (var item in grouped) {
-            if (!products.TryGetValue(item.ProductId, out var product)) {
-                throw new InvalidOperationException($"Товар {item.ProductId} не найден");
-            }
-
-            product.Count += item.Count;
-            _productService.Update(product);
-        }
-
+        _productService.ReturnForInvoice(invoice.InvoiceDetails);
         _repository.Delete(id);
         _unitOfWork.SaveChanges();
     }
@@ -70,77 +65,5 @@ public sealed class InvoiceService : IInvoiceService {
 
     public IEnumerable<Invoice> Get(InvoiceFilter parameter) {
         return _repository.Get(parameter);
-    }
-
-    public static void ValidateInvoiceDetails(IReadOnlyCollection<InvoiceDetail> invoiceDetails) {
-        if (invoiceDetails.Count == 0) {
-            throw new ArgumentException("Накладная не содержит товаров");
-        }
-
-        if (invoiceDetails.Any(x => x.Count <= 0)) {
-            throw new ArgumentException("Некорректное количество, значение <= 0");
-        }
-    }
-
-    private static void CalculateInvoiceTotals(Invoice invoice) {
-        foreach (var detail in invoice.InvoiceDetails) {
-            detail.Total = (int)Math.Round(detail.Count * detail.Price, MidpointRounding.AwayFromZero);
-        }
-
-        invoice.Total = invoice.InvoiceDetails.Sum(x => x.Total);
-        invoice.TotalWithDiscount = invoice.Total - invoice.Discount;
-    }
-
-    private static void ValidatePaidAmount(int paidAmount, int totalWithDiscount) {
-        if (paidAmount < 0) {
-            throw new InvalidOperationException("Сумма оплаты не может быть меньше 0");
-        }
-
-        if (paidAmount > totalWithDiscount) {
-            throw new InvalidOperationException($"Сумма оплаты превышает итоговую сумму накладной: {totalWithDiscount}");
-        }
-    }
-
-    private static PaymentStatus RecalculatePaymentStatus(int totalWithDiscount, int paidAmount) {
-        if (paidAmount <= 0) {
-            return PaymentStatus.Unpaid;
-        }
-
-        return paidAmount >= totalWithDiscount
-            ? PaymentStatus.Paid
-            : PaymentStatus.PartiallyPaid;
-    }
-
-    private static void ValidatePayments(IEnumerable<InvoicePayment> payments) {
-        if (payments.Any(x => x.Amount <= 0)) {
-            throw new InvalidOperationException("Сумма оплаты должна быть больше 0");
-        }
-    }
-
-    private IReadOnlyDictionary<int, Product> GetProductsMap(IEnumerable<(int ProductId, int Count)> grouped) {
-        return _productService.Get(grouped.Select(x => x.ProductId).ToArray())
-            .ToDictionary(p => p.Id);
-    }
-
-    private static List<(int ProductId, int Count)> GetGroupedInvoiceDetails(IEnumerable<InvoiceDetail> detailsSource) {
-        var details = detailsSource.ToList();
-        ValidateInvoiceDetails(details);
-
-        return details
-            .GroupBy(d => d.ProductId)
-            .Select(g => (ProductId: g.Key, Count: g.Sum(x => x.Count)))
-            .ToList();
-    }
-
-    private static void ValidateStock(IEnumerable<(int ProductId, int Count)> grouped, IReadOnlyDictionary<int, Product> products) {
-        foreach (var item in grouped) {
-            if (!products.TryGetValue(item.ProductId, out var product)) {
-                throw new InvalidOperationException($"Товар {item.ProductId} не найден");
-            }
-
-            if (product.Count < item.Count) {
-                throw new InvalidOperationException($"Недостаточно остатка по товару {product.Name}: нужно {item.Count}, доступно {product.Count}");
-            }
-        }
     }
 }

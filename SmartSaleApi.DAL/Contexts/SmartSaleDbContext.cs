@@ -17,7 +17,6 @@ public sealed class SmartSaleDbContext(DbContextOptions<SmartSaleDbContext> opti
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.ApplyConfiguration(new BuyerConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
-        modelBuilder.ApplyConfiguration(new InvoiceDetailConfiguration());
         modelBuilder.ApplyConfiguration(new InvoicePaymentConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new ReceptionConfiguration());

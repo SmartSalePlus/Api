@@ -10,7 +10,6 @@ public interface IProductService {
     IEnumerable<Product> Get(string name);
     IEnumerable<Product> Get();
     IEnumerable<Product> Get(IEnumerable<int> ids);
-    void ReserveForInvoice(IEnumerable<InvoiceDetail> details);
-    void ReconcileInvoiceDetails(IEnumerable<InvoiceDetail> oldDetails, IEnumerable<InvoiceDetail> newDetails);
-    void ReturnForInvoice(IEnumerable<InvoiceDetail> details);
+    void Sell(IEnumerable<InvoiceDetail> details);
+    void Return(IEnumerable<InvoiceDetail> details);
 }

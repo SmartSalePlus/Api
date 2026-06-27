@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartSaleApi.Core.Interfaces.Reports;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Dtos.Products;
 using SmartSaleApi.Extensions.Mapping;
@@ -9,9 +10,9 @@ namespace SmartSaleApi.Controllers;
 [Route("api/[controller]/[action]")]
 public sealed class ProductController : ControllerBase {
     private readonly IProductService _productService;
-    private readonly IProductReportService _reportService;
+    private readonly IProductReport _reportService;
 
-    public ProductController(IProductService productService, IProductReportService reportService) {
+    public ProductController(IProductService productService, IProductReport reportService) {
         _productService = productService;
         _reportService = reportService;
     }

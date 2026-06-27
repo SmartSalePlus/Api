@@ -18,12 +18,6 @@ public sealed class InvoiceRepository : IInvoiceRepository {
         _context.Invoices.Add(invoice);
     }
 
-    public void Delete(int id) {
-        var invoice = _context.Invoices.FirstOrDefault(x => x.Id == id);
-        ArgumentNullException.ThrowIfNull(invoice);
-        invoice.EntityStatus = EntityStatus.Archived;
-    }
-
     public void Update(Invoice invoice) {
         var existingInvoice = _context.Invoices
             .Include(x => x.InvoiceDetails)
@@ -69,7 +63,7 @@ public sealed class InvoiceRepository : IInvoiceRepository {
     private IQueryable<Invoice> BuildBaseQuery() {
         return _context.Invoices
             .AsNoTracking()
-            .Where(x => x.EntityStatus == EntityStatus.Active)
+            .Where(x => !x.IsDeleted)
             .Include(x => x.Buyer)
             .Include(x => x.InvoiceDetails.OrderBy(d => d.Product.Name))
             .ThenInclude(x => x.Product)

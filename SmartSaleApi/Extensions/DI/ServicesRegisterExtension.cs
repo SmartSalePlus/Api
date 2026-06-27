@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using SmartSaleApi.Application.Reports;
 using SmartSaleApi.Application.Services;
+using SmartSaleApi.Core.Interfaces.Reports;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Settings;
 using System.Text;
@@ -11,13 +13,11 @@ internal static class ServicesRegisterExtension {
     public static IServiceCollection AddServices(this IServiceCollection services) {
         services.AddScoped<IBuyerService, BuyerService>();
         services.AddScoped<IInvoiceService, InvoiceService>();
-        services.AddScoped<IInvoiceDetailsService, InvoiceDetailsService>();
-        services.AddScoped<IInvoicePaymentsService, InvoicePaymentsService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IReceptionService, ReceptionService>();
-        services.AddScoped<IInvoiceReportService, InvoicePdfService>();
-        services.AddScoped<IProductReportService, ProductPdfService>();
-        services.AddScoped<IBuyerReportService, BuyerPdfService>();
+        services.AddScoped<IInvoiceReport, InvoicePdfReport>();
+        services.AddScoped<IProductReport, ProductPdfReport>();
+        services.AddScoped<IBuyerReport, BuyerPdfReport>();
         services.AddScoped<ICryptoService, CryptoService>();
         services.AddScoped<ISecurityService, SecurityService>();
         services.AddScoped<IJwtService, JwtService>();

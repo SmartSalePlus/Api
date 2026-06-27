@@ -39,7 +39,7 @@ public sealed class ProductService : IProductService {
         _repository.Update(product);
     }
 
-    public void SellProducts(IEnumerable<InvoiceDetail> details) {
+    public void Sell(IEnumerable<InvoiceDetail> details) {
         var grouped = details
             .GroupBy(d => d.ProductId)
             .ToDictionary(g => g.Key, g => g.Sum(x => x.Count));
@@ -61,27 +61,7 @@ public sealed class ProductService : IProductService {
         }
     }
 
-    public void ReconcileInvoiceDetails(IEnumerable<InvoiceDetail> oldDetails, IEnumerable<InvoiceDetail> newDetails) {
-        var oldGrouped = GroupByProduct(oldDetails);
-        var newGrouped = GroupByProduct(newDetails);
-
-        var ids = oldGrouped.Keys.Concat(newGrouped.Keys).Distinct();
-        var products = LoadProducts(ids);
-
-        var additionalRequired = newGrouped.ToDictionary(
-            x => x.Key,
-            x => x.Value - oldGrouped.GetValueOrDefault(x.Key, 0));
-
-        EnsureStockAvailable(additionalRequired, products, newGrouped);
-
-        var delta = ids.ToDictionary(
-            id => id,
-            id => oldGrouped.GetValueOrDefault(id, 0) - newGrouped.GetValueOrDefault(id, 0));
-
-        ApplyDelta(products, delta);
-    }
-
-    public void ReturnForInvoice(IEnumerable<InvoiceDetail> details) {
+    public void Return(IEnumerable<InvoiceDetail> details) {
         var grouped = details
             .GroupBy(d => d.ProductId)
             .ToDictionary(g => g.Key, g => g.Sum(x => x.Count));

@@ -3,15 +3,16 @@ using iText.Layout.Properties;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Application.Extensions;
 using SmartSaleApi.Application.Factories;
+using SmartSaleApi.Core.Interfaces.Reports;
 
-namespace SmartSaleApi.Application.Services;
+namespace SmartSaleApi.Application.Reports;
 
-public sealed class InvoicePdfService : IInvoiceReportService {
+public sealed class InvoicePdfReport : IInvoiceReport {
     private readonly IInvoiceService _invoiceService;
     private readonly IProductService _productService;
     private readonly IBuyerService _buyerService;
 
-    public InvoicePdfService(IInvoiceService invoiceService, IProductService productService, IBuyerService buyerService) {
+    public InvoicePdfReport(IInvoiceService invoiceService, IProductService productService, IBuyerService buyerService) {
         _invoiceService = invoiceService;
         _productService = productService;
         _buyerService = buyerService;

@@ -2,15 +2,16 @@
 using iText.Layout.Properties;
 using SmartSaleApi.Application.Extensions;
 using SmartSaleApi.Application.Factories;
+using SmartSaleApi.Core.Interfaces.Reports;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Core.Models;
 
-namespace SmartSaleApi.Application.Services;
+namespace SmartSaleApi.Application.Reports;
 
-public sealed class ProductPdfService : IProductReportService {
+public sealed class ProductPdfReport : IProductReport {
     private readonly IProductService _productService;
 
-    public ProductPdfService(IProductService productService) {
+    public ProductPdfReport(IProductService productService) {
         _productService = productService;
     }
 

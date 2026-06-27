@@ -4,15 +4,16 @@ using SmartSaleApi.Application.Extensions;
 using SmartSaleApi.Application.Factories;
 using SmartSaleApi.Core.Enums;
 using SmartSaleApi.Core.Filters;
+using SmartSaleApi.Core.Interfaces.Reports;
 using SmartSaleApi.Core.Interfaces.Services;
 
-namespace SmartSaleApi.Application.Services;
+namespace SmartSaleApi.Application.Reports;
 
-public sealed class BuyerPdfService : IBuyerReportService {
+public sealed class BuyerPdfReport : IBuyerReport {
     private readonly IBuyerService _buyerService;
     private readonly IInvoiceService _invoiceService;
 
-    public BuyerPdfService(IBuyerService buyerService, IInvoiceService invoiceService) {
+    public BuyerPdfReport(IBuyerService buyerService, IInvoiceService invoiceService) {
         _buyerService = buyerService;
         _invoiceService = invoiceService;
     }
@@ -21,7 +22,7 @@ public sealed class BuyerPdfService : IBuyerReportService {
         var buyer = _buyerService.Get(buyerId);
         var parameter = new InvoiceFilter(DateOnly.MinValue, DateOnly.MaxValue, buyerId, null);
         var invoices = _invoiceService.Get(parameter)
-            .Where(x => x.PaymentStatus != PaymentStatus.Paid);
+            .Where(x => x.PaymentStatus != PaymentStatus.Full);
 
         var date = DateTime.Now.ToString("dd.MM.yyyy");
         var name = $"{buyer.Name}_{date}.pdf";

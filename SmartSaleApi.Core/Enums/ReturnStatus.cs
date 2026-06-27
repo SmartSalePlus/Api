@@ -1,7 +1,7 @@
 ﻿namespace SmartSaleApi.Core.Enums;
 
-public enum PaymentStatus {
+public enum ReturnStatus {
     None = 0,
     Partial = 1,
-    Full = 2
+    Full = 3
 }

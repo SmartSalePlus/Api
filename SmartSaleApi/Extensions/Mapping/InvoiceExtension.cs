@@ -23,13 +23,17 @@ public static class InvoiceExtension {
             src.Discount,
             src.TotalWithDiscount,
             src.PaidAmount,
-            src.TotalWithDiscount - src.PaidAmount,
             src.PaymentStatus,
-            src.Buyer!.ToDto(),
+            src.Buyer.ToDto(),
             src.InvoiceDetails.Select(x => x.ToDto()).ToList(),
             src.InvoicePayments.Select(x => x.ToDto()).ToList()
         );
 
     public static InvoiceFilter ToFilter(this InvoiceFilterDto src)
-        => new(src.DateBegin, src.DateEnd, src.BuyerId, src.PaymentStatus);
+        => new(
+            src.DateBegin,
+            src.DateEnd,
+            src.BuyerId,
+            src.PaymentStatus
+        );
 }

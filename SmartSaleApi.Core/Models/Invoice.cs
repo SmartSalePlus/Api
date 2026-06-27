@@ -12,10 +12,10 @@ public sealed class Invoice {
     public int TotalWithDiscount { get; set; }
 
     public int PaidAmount { get; set; }
-    public EntityStatus EntityStatus { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
+    public bool IsDeleted { get; set; }
 
-    public Buyer Buyer { get; set; }
+    public Buyer Buyer { get; set; } = null!;
     public ICollection<InvoiceDetail> InvoiceDetails { get; set; } = [];
     public ICollection<InvoicePayment> InvoicePayments { get; set; } = [];
 }

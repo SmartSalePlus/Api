@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartSaleApi.Core.Interfaces.Reports;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Dtos.Invoices;
 using SmartSaleApi.Extensions.Mapping;
@@ -9,9 +10,9 @@ namespace SmartSaleApi.Controllers;
 [Route("api/[controller]/[action]")]
 public sealed class InvoiceController : ControllerBase {
     private readonly IInvoiceService _invoiceService;
-    private readonly IInvoiceReportService _reportService;
+    private readonly IInvoiceReport _reportService;
 
-    public InvoiceController(IInvoiceService invoiceService, IInvoiceReportService invoiceReportService) {
+    public InvoiceController(IInvoiceService invoiceService, IInvoiceReport invoiceReportService) {
         _invoiceService = invoiceService;
         _reportService = invoiceReportService;
     }

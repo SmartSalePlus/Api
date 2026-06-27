@@ -5,5 +5,5 @@ public sealed class InvoicePayment {
     public int InvoiceId { get; set; }
     public DateOnly Date { get; set; }
     public int Amount { get; set; }
-    public Invoice Invoice { get; set; }
+    public Invoice Invoice { get; set; } = null!;
 }

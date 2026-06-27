@@ -10,9 +10,10 @@ public sealed record InvoiceDto(
     int Discount,
     int TotalWithDiscount,
     int PaidAmount,
-    int RemainingAmount,
     PaymentStatus PaymentStatus,
     BuyerDto Buyer,
     IEnumerable<InvoiceDetailDto> InvoiceDetails,
     IEnumerable<InvoicePaymentDto> InvoicePayments
-);
+) {
+    public int RemainingAmount => TotalWithDiscount - PaidAmount;
+}

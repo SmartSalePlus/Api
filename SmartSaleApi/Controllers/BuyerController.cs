@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartSaleApi.Core.Interfaces.Reports;
 using SmartSaleApi.Core.Interfaces.Services;
 using SmartSaleApi.Dtos.Buyers;
 using SmartSaleApi.Extensions.Mapping;
@@ -9,9 +10,9 @@ namespace SmartSaleApi.Controllers;
 [Route("api/[controller]/[action]")]
 public sealed class BuyerController : ControllerBase {
     private readonly IBuyerService _buyerService;
-    private readonly IBuyerReportService _reportService;
+    private readonly IBuyerReport _reportService;
 
-    public BuyerController(IBuyerService buyerService, IBuyerReportService reportService) {
+    public BuyerController(IBuyerService buyerService, IBuyerReport reportService) {
         _buyerService = buyerService;
         _reportService = reportService;
     }
